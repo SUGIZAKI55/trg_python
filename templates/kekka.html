@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Month Quiz</title>
+    <!-- Bootstrap CSS -->
+</head>
+<body >
+    <div class="card-header text-center">
+        <h3>問題 Q_no={{Q_no}}</h3>
+        <h1>{{ kekka }}</h1>
+    </div>
+    <div >
+        {% if Q_no==6 %}
+            <p>終了</p>
+        {% else %}
+            <form action="/question" method="get">
+                <button type="submit" >Next</button>
+            </form>  
+        {% endif %}
+    </div>
+
+</body>
+</html>
