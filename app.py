@@ -1,4 +1,5 @@
 #add アオキ
+#add スギザキ
 from flask import Flask, render_template, request
 
 
