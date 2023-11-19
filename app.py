@@ -1,8 +1,6 @@
-#add アオキ
-#add スギザキ
+#11/19 19:34 変更しました。
+
 from flask import Flask, render_template, request
-
-
 
 app = Flask(__name__)
 
