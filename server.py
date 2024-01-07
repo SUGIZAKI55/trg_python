@@ -88,6 +88,33 @@ def check_answer():
     # else:
     #     return "不正解です。"
 
+users = {
+    'user1': 'pass',
+    'user2': 'pass',
+}
+
+
+@app.route('/login2')
+def login_form():
+    # GETリクエストの処理: ログインフォームを表示
+    return render_template('login.html')
+
+@app.route('/login', methods=['POST'])
+def login():
+    # POSTリクエストの処理: ログインフォームからのデータを処理
+    username = request.form['username']
+    password = request.form['password']
+
+    user_password_hash = users.get(username)
+    #if user_password_hash and check_password_hash(user_password_hash, password):
+    if user_password_hash and user_password_hash=='pass':
+        print("@111 OK")
+        # ログイン成功
+        session['username'] = username
+        return redirect(url_for('home'))  # ホームページにリダイレクト
+    else:
+        flash('パスワードが間違えてますよ')
+        return redirect(url_for('login_form'))
 
 
 if __name__ == "__main__":
