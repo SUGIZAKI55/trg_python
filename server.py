@@ -17,8 +17,8 @@ sets = [
     ["問題6 以下の言語の中でスペイン語で「こんにちは」は？", "Hello:Bonjour:Halo:Hola", "Hola", "スペイン語で「こんにちは」は「Hola」と言います。"],
 ]
 
-@app.route('/')
-def home():
+@app.route('/loginok')
+def loginok():
     session["Q_no"] = 0
     return redirect('/question', code=302)
 
@@ -89,12 +89,12 @@ def check_answer():
     #     return "不正解です。"
 
 users = {
-    'user1': 'pass',
-    'user2': 'pass',
+    'user1': 'pass1',
+    'user2': 'pass2',
 }
+#users["user2"]=結果がpass2
 
-
-@app.route('/login2')
+@app.route('/')
 def login_form():
     # GETリクエストの処理: ログインフォームを表示
     return render_template('login.html')
@@ -103,18 +103,19 @@ def login_form():
 def login():
     # POSTリクエストの処理: ログインフォームからのデータを処理
     username = request.form['username']
-    password = request.form['password']
+    password = request.form['password'] #userが入れたPassword
 
-    user_password_hash = users.get(username)
+    pwd = users.get(username) #ServerがもっているPassword
     #if user_password_hash and check_password_hash(user_password_hash, password):
-    if user_password_hash and user_password_hash=='pass':
+    #if user_password_hash and user_password_hash=='pass':
+
+    if password == pwd: 
         print("@111 OK")
         # ログイン成功
         session['username'] = username
-        return redirect(url_for('home'))  # ホームページにリダイレクト
+        return redirect(url_for('loginok'))  # ホームページにリダイレクト
     else:
-        flash('パスワードが間違えてますよ')
-        return redirect(url_for('login_form'))
+        return render_template("error.html")
 
 
 if __name__ == "__main__":

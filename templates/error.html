@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Error Page</title>
+    <script>
+        document.addEventListener('keydown', function(event) {
+            window.location.href = "{{ url_for('login_form') }}"; // ログインページへリダイレクト
+        });
+    </script>
+</head>
+<body>
+    <h1>エラーが発生しました</h1>
+    <p>任意のキーを押してログインページに戻ってください。</p>
+</body>
+</html>
