@@ -24,29 +24,32 @@ def loginok():
 
 @app.route('/question') #questionが飛んできたらプログラムが実行
 def q1():
-    Q_no = session["Q_no"]
-    print("Q_no=",Q_no)
-    q1 = sets[Q_no]
-
-
-    # q1= ["問題1 今月は何月ですか？", "6月:7月:8月:9月:10月:11月:12月", "10月", "説明1"]
-    print(q1[0])  # 質問文の表示
-
-    arr = q1[1].split(":")  # 解答群の作成　多数の中から４つをランダムで選択
-    print("arr=",arr)
-    if len(arr) < 4:
-        crs = len(arr)
+    if 'username' not in session:
+        print("セッションがありません")
     else:
-        crs = 4    
-    result = random.sample(arr, crs)
-    
-    for i, choice in enumerate(result, 1):
-        print(i, choice)
-    
-    cs_temp = set(q1[2].split(":")) #正解をここで作っておく
-    correct_choices = set(result) & cs_temp
-    session["correct_ans"] = correct_choices
-    return render_template('index.html', question=q1[0], choices=result)
+        print(f"@27= {session=}")
+        Q_no = session["Q_no"]
+        print("Q_no=",Q_no)
+        q1 = sets[Q_no]
+        
+        # q1= ["問題1 今月は何月ですか？", "6月:7月:8月:9月:10月:11月:12月", "10月", "説明1"]
+        print(q1[0])  # 質問文の表示
+
+        arr = q1[1].split(":")  # 解答群の作成　多数の中から４つをランダムで選択
+        print("arr=",arr)
+        if len(arr) < 4:
+            crs = len(arr)
+        else:
+            crs = 4    
+        result = random.sample(arr, crs)
+        
+        for i, choice in enumerate(result, 1):
+            print(i, choice)
+        
+        cs_temp = set(q1[2].split(":")) #正解をここで作っておく
+        correct_choices = set(result) & cs_temp
+        session["correct_ans"] = correct_choices
+        return render_template('index.html', question=q1[0], choices=result)
 
 @app.route('/answer', methods=['GET']) #answerが飛んできたら下のプログラムが実行
 def check_answer():
@@ -113,6 +116,8 @@ def login():
         print("@111 OK")
         # ログイン成功
         session['username'] = username
+        print(f"{session ['username']=}")
+        #print(f"{session=}")
         return redirect(url_for('loginok'))  # ホームページにリダイレクト
     else:
         return render_template("error.html")
