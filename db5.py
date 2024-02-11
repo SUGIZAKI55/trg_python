@@ -5,6 +5,16 @@ from mysql.connector import Error
 
 app = Flask(__name__)
 
+def hash(password):
+    #passwordをハッシュ化する
+    password_bytes = password.encode('utf-8')
+    salt=bcrypt.gensalt()
+    hashed_password = bcrypt.hashpw(password_bytes, salt)
+    return hashed_password
+
+# password = "1122"
+# hash(password)
+
 # データベース接続設定
 def create_db_connection():
     connection = None
@@ -37,10 +47,20 @@ def insert_user(username, password_hash):
         return "Failed to create database connection"
 
 # ユーザーを追加するルート
+# @app.route('/add_user', methods=['POST'])
+# def add_user():
+#     username = request.form['username']
+#     userpassword = request.form['password_hash']
+#     hashed_password = bcrypt.hashpw(userpassword, bcrypt.gensalt())
+#     result = insert_user(username,hashed_password)
+#     return jsonify({'message': result})
+
+# ユーザーを追加するルート（新しい）
 @app.route('/add_user', methods=['POST'])
 def add_user():
     username = request.form['username']
-    password_hash = request.form['password_hash']
+    password = request.form['password_hash']
+    password_hash = hash(password)
     result = insert_user(username, password_hash)
     return jsonify({'message': result})
 
@@ -52,10 +72,10 @@ def index():
     <!DOCTYPE html>
     <html>
     <head>
-        <title>Add User</title>
+        <title>ユーザー登録フォーム</title>
     </head>
     <body>
-        <h2>Add User</h2>
+        <h2>ユーザー登録フォーム</h2>
         <form action="/add_user" method="post">
             <label for="username">Username:</label>
             <input type="text" id="username" name="username"><br><br>
@@ -74,17 +94,18 @@ if __name__ == '__main__':
 
 
 # ユーザーから受け取ったパスワード
-password = "user_password_here"
+#password = "user_password_here"
 
 # パスワードをバイト文字列に変換
-password_bytes = password.encode('utf-8')
+#password_bytes = password.encode('utf-8')
 
 # パスワードのハッシュを生成（ソルトは自動的に生成される）
-hashed_password = bcrypt.hashpw(password_bytes, bcrypt.gensalt())
+#hashed_password = bcrypt.hashpw(password_bytes, bcrypt.gensalt())
 
 # ハッシュ化されたパスワードを表示（データベースに保存する値）
-print(hashed_password)
+#print(hashed_password)
 
 # ハッシュ化されたパスワードをバイト列から文字列に変換して保存や比較に使いやすくする
-hashed_password_str = hashed_password.decode('utf-8')
-print(hashed_password_str)
+#hashed_password_str = hashed_password.decode('utf-8')
+#print(hashed_password_str)
+
