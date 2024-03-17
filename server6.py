@@ -1,7 +1,8 @@
 import random
-from flask import Flask, redirect, url_for, render_template, request,session
+from flask import Flask, redirect, url_for, render_template, request, session
 from flask_session import Session
-#通常クライアント側にデータが保存される（session）、サーバー側に保存する場合が(Session)
+import sqlite3
+import bcrypt
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key_here'
@@ -16,6 +17,56 @@ sets = [
     ["問題5 以下の中で果物はどれ？", "ピーマン:キャベツ:ブロッコリー:メロン:パイナップル:バナナ", "メロン:パイナップル:バナナ", "メロン:パイナップル:バナナは果物の一種ですが、野菜としても扱われることが多いです。"],
     ["問題6 以下の言語の中でスペイン語で「こんにちは」は？", "Hello:Bonjour:Halo:Hola", "Hola", "スペイン語で「こんにちは」は「Hola」と言います。"],
 ]
+
+
+# SQLite3データベース接続設定
+def create_db_connection():
+    connection = sqlite3.connect('sugizaki.db')
+    return connection
+
+# ユーザーの認証を行う関数
+def authenticate_user(username, password):
+    connection = create_db_connection()
+    if connection is not None:
+        try:
+            cursor = connection.cursor()
+            query = "SELECT password_hash FROM users WHERE username = ?"
+            cursor.execute(query, (username,))
+            result = cursor.fetchone()
+            if result:
+                hashed_password = result[0]
+                if bcrypt.checkpw(password.encode('utf-8'), hashed_password):
+                    return True
+        except sqlite3.Error as e:
+            print(f"The error '{e}' occurred")
+        finally:
+            cursor.close()
+            connection.close()
+    return False
+
+@app.route('/')
+def login_form():
+    # GETリクエストの処理: ログインフォームを表示
+    return render_template('login.html')
+
+@app.route('/login', methods=['POST'])
+def login():
+    # POSTリクエストの処理: ログインフォームからのデータを処理
+    username = request.form['username']
+    password = request.form['password']
+
+    if authenticate_user(username, password):
+        # ログイン成功
+        session['username'] = username
+        return redirect(url_for('loginok'))  # ログイン後のページにリダイレクト
+    else:
+        return render_template("error.html")
+
+@app.route('/logout')
+def logout():
+    # セッションからユーザー名を削除してログアウト
+    session.pop('username', None)
+    return redirect(url_for('login_form'))
 
 @app.route('/loginok')
 def loginok():
@@ -72,91 +123,8 @@ def check_answer():
     Q = Q + 1
     session["Q_no"]=Q
     return render_template('kekka.html', kekka=answer,Q_no=Q)
-    # return answer
 
-    #10/15の作業
-    #anserの複数の答えを一致させるプログラムを作成する
-    #10/22の作業
-    #問題1から問題2へ偏移させるためのプログラムを作成する
-    #10/29
-    #render_templateを使ってhtmlに変数を渡せる
-    #辞書、配列、集合型
-
-    # user_choice = request.args.get('choice')
-    # print(user_choice)
-    # correct_choice = "10月"
-
-    # if user_choice == correct_choice:
-    #     return "正解です！"
-    # else:
-    #     return "不正解です。"
-
-users = {
-    'user1': 'pass1',
-    'user2': 'pass2',
-}
-#users["user2"]=結果がpass2
-
-@app.route('/')
-def login_form():
-    # GETリクエストの処理: ログインフォームを表示
-    return render_template('login.html')
-
-@app.route('/login', methods=['POST'])
-def login():
-    # POSTリクエストの処理: ログインフォームからのデータを処理
-    username = request.form['username']
-    password = request.form['password'] #userが入れたPassword
-
-    pwd = users.get(username) #ServerがもっているPassword
-    #if user_password_hash and check_password_hash(user_password_hash, password):
-    #if user_password_hash and user_password_hash=='pass':
-
-    if password == pwd: 
-        print("@111 OK")
-        # ログイン成功
-        session['username'] = username
-        print(f"{session ['username']=}")
-        #print(f"{session=}")
-        return redirect(url_for('loginok'))  # ホームページにリダイレクト
-    else:
-        return render_template("error.html")
-
-
-# from flask import Flask
-import mysql.connector
-
-# app = Flask(__name__)
-
-# データベース設定
-db_config = {
-    'host': 'localhost',
-    'user': 'root',
-    'password': '',
-    'database': 'sugizaki'
-}
-
-@app.route('/test')
-def index():
-    # データベースに接続
-    cnx = mysql.connector.connect(**db_config)
-    cursor = cnx.cursor()
-
-    # クエリの実行
-    cursor.execute("SELECT * FROM users")
-
-    # 結果の取得
-    users = cursor.fetchall()
-
-    # 接続の終了
-    cursor.close()
-    cnx.close()
-
-    # 結果を表示（例として）
-    return str(users)
-
-# if __name__ == '__main__':
-#     app.run(debug=True)
+# 以下、質問ページなどのルートは省略
 
 if __name__ == "__main__":
-    app.run(debug=True,port=8888)
+    app.run(debug=True, port=8888)
