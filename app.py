@@ -102,7 +102,9 @@ def logout():
     # セッションからユーザー名を削除してログアウト
     session.pop('username', None)
     session.clear()
-    return redirect(url_for('login_form'))
+    print("ログアウト終了")
+    # return redirect(url_for('login_form'))
+    return "終わったよ"
 
 @app.route('/loginok')
 def loginok():
@@ -159,7 +161,7 @@ def question():
         cs_temp = set(q1[2].split(":")) #正解をここで作っておく
         correct_choices = set(result) & cs_temp
         session["correct_ans"] = correct_choices
-        return render_template('index.html', question=q1[0], choices=result)
+        return render_template('question.html', question=q1[0], choices=result)
 
 @app.route('/answer', methods=['GET']) #answerが飛んできたら下のプログラムが実行
 def check_answer():
@@ -184,7 +186,6 @@ def check_answer():
     return render_template('kekka.html', kekka=answer,Q_no=Q)
 
 # 以下、質問ページなどのルートは省略
-
 
 
 if __name__ == "__main__":
