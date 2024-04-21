@@ -12,6 +12,15 @@ app.config['SECRET_KEY'] = 'your_secret_key_here'
 app.config['SESSION_TYPE'] = 'filesystem'
 Session(app)
 
+# @app.before_first_request
+# def setup():
+#     print("This runs once before the first request")
+
+# @app.before_first_request
+# def load_questions():
+#     global sets
+#     sets = load_questions_from_file()
+
 # SQLite3データベース接続設定
 def create_db_connection():
     connection = sqlite3.connect('sugizaki.db')
@@ -39,14 +48,25 @@ def authenticate_user(username, password):
 
 
 
-sets = [
-    ["問題1 今月は何月ですか？", "6月:7月:8月:9月:10月:11月:12月", "10月", "説明1"],
-    ["問題2 以下の動物の中で鳥はどれ？", "ライオン:象:ペンギン:カンガルー:カモメ:スズメ", "ペンギン:カモメ:スズメ", "ペンギンは鳥の一種ですが、飛べません。"],
-    ["問題3 最も大きな惑星は？", "地球:火星:木星:金星", "木星", "木星は太陽系で最も大きな惑星です。"],
-    ["問題4 日本の首都は？", "大阪:東京:福岡:仙台", "東京", "日本の首都は東京です。"],
-    ["問題5 以下の中で果物はどれ？", "ピーマン:キャベツ:ブロッコリー:メロン:パイナップル:バナナ", "メロン:パイナップル:バナナ", "メロン:パイナップル:バナナは果物の一種ですが、野菜としても扱われることが多いです。"],
-    ["問題6 以下の言語の中でスペイン語で「こんにちは」は？", "Hello:Bonjour:Halo:Hola", "Hola", "スペイン語で「こんにちは」は「Hola」と言います。"],
-]
+# sets = [
+#     ["問題1 今月は何月ですか？", "6月:7月:8月:9月:10月:11月:12月", "10月", "説明1"],
+#     ["問題2 以下の動物の中で鳥はどれ？", "ライオン:象:ペンギン:カンガルー:カモメ:スズメ", "ペンギン:カモメ:スズメ", "ペンギンは鳥の一種ですが、飛べません。"],
+#     ["問題3 最も大きな惑星は？", "地球:火星:木星:金星", "木星", "木星は太陽系で最も大きな惑星です。"],
+#     ["問題4 日本の首都は？", "大阪:東京:福岡:仙台", "東京", "日本の首都は東京です。"],
+#     ["問題5 以下の中で果物はどれ？", "ピーマン:キャベツ:ブロッコリー:メロン:パイナップル:バナナ", "メロン:パイナップル:バナナ", "メロン:パイナップル:バナナは果物の一種ですが、野菜としても扱われることが多いです。"],
+#     ["問題6 以下の言語の中でスペイン語で「こんにちは」は？", "Hello:Bonjour:Halo:Hola", "Hola", "スペイン語で「こんにちは」は「Hola」と言います。"],
+# ]
+
+# def load_questions_from_file():
+with open('quiz_questions.txt', 'r', encoding='utf-8') as file:
+    content = file.read().strip()
+questions = content.split('\n\n')
+sets = []
+for question in questions:
+    parts = question.split('\n')
+    if len(parts) == 4:
+        sets.append(parts)
+# return sets
 
 # SQLite3データベース接続設定
 def create_db_connection():
