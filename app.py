@@ -110,7 +110,12 @@ def logout():
 def loginok():
     session["Q_no"] = 0
     # return redirect('/question', code=302)
-    return redirect(url_for('question'))
+    return redirect(url_for('admin'))
+
+@app.route('/admin')
+def admin():
+    print("管理者画面に飛んできました")
+    return render_template('admin.html')
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
