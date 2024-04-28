@@ -4,9 +4,9 @@ from flask_session import Session
 import sqlite3
 import bcrypt
 from datetime import timedelta
+from createquiz import app
+from datetime import datetime
 
-
-app = Flask(__name__)
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=1)
 app.config['SECRET_KEY'] = 'your_secret_key_here'
 app.config['SESSION_TYPE'] = 'filesystem'
@@ -186,14 +186,26 @@ def question():
         cs_temp = set(q1[2].split(":")) #正解をここで作っておく
         correct_choices = set(result) & cs_temp
         session["correct_ans"] = correct_choices
+        start_datetime = datetime.now() #今現在の日付型を取得する
+        formatted_date_string = start_datetime.strftime('%Y-%m-%d %H:%M:%S') #日付型を文字列に変換する
+        session["start_datetime"] = formatted_date_string #文字列にしたことでセッションに保存できる
+        print(f"開始時刻: {start_datetime}")
         return render_template('question.html', question=q1[0], choices=result)
 
 @app.route('/answer', methods=['GET']) #answerが飛んできたら下のプログラムが実行
 def check_answer():
     correct_ans=session["correct_ans"]
     print("correct_ans=",correct_ans)
-    user_choice = request.args.getlist('choice[]')  
+    user_choice = request.args.getlist('choice[]')
+    end_datetime = datetime.now()
+    print(f"終了時刻: {end_datetime}")
+    print(f"@200:{session = } ")
+    date_string = session["start_datetime"]
+    start_datetime = datetime.strptime(date_string, '%Y-%m-%d %H:%M:%S')
+    elapsed_time = end_datetime - start_datetime
+    print(f"{elapsed_time=}")
     print("user_choice=",user_choice)
+    # print(f"経過時間: {elapsed_time}")
 
     correct_set = correct_ans 
     user_set = set(user_choice) #右がbefore、左はafter
