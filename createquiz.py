@@ -19,10 +19,10 @@ def save_questions(questions):
         for q in questions:
             file.write(f"{q['title']}\n{q['choices']}\n{q['answer']}\n{q['explanation']}\n\n")
 
-@app.route('/createQuiz')
+@app.route('/editQuiz')
 def index():
     questions = load_questions()
-    return render_template('q_index.html', questions=questions)
+    return render_template('e_index.html', questions=questions)
 
 @app.route('/edit/<int:question_id>', methods=['GET', 'POST'])
 def edit_question(question_id):
@@ -36,6 +36,11 @@ def edit_question(question_id):
         save_questions(questions)
         return redirect(url_for('index'))
     return render_template('edit.html', question=questions[question_id], question_id=question_id)
+
+@app.route('/createQuiz')
+def index():
+    questions = load_questions()
+    return render_template('q_index.html', questions=questions)
 
 if __name__ == '__main__':
     app.run(debug=True)

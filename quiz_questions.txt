@@ -27,4 +27,3 @@
 Hello:Bonjour:Halo:Hola
 Hola
 スペイン語で「こんにちは」は「Hola」と言います。
-

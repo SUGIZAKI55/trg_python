@@ -26,6 +26,7 @@ def create_db_connection():
     connection = sqlite3.connect('sugizaki.db')
     return connection
 
+
 # ユーザーの認証を行う関数
 def authenticate_user(username, password):
     connection = create_db_connection()
