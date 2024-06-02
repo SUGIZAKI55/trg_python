@@ -41,8 +41,30 @@ def edit_question(question_id):
 
 @app.route('/createQuiz')
 def index2():
+    return render_template('q_index.html')
+
+@app.route('/createQuiz2',methods = ['POST'])
+def createQuiz2():
+    title = request.form.get('title')
+    choices = request.form.get('choices')
+    answer = request.form.get('answer')
+    explanation = request.form.get('explanation')
+    print(title)
+    print(choices)
+    print(answer)
+    print(explanation)
+
+    new_question = {
+        'title': title,
+        'choices': choices,
+        'answer': answer,
+        'explanation': explanation
+    }
+
     questions = load_questions()
-    return render_template('q_index.html', questions=questions)
+    questions.append(new_question)
+    save_questions(questions)
+    return"登録が完了しました"
 
 if __name__ == '__main__':
     app.run(debug=True)
