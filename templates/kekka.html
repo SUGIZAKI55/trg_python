@@ -9,17 +9,20 @@
 <body >
     <div class="card-header text-center">
         <h3>問題 Q_no={{Q_no}}</h3>
-        <h1>{{ kekka }}</h1>
+    
     </div>
     <div >
-        {% if Q_no==6 %}
-            <p>終了</p>
-        {% else %}
+        {% if Q_no==3 %}
+            <p>終了</p> 
+            <a href="{{ url_for('admin') }}">戻る</a>    
+        {% else %} <br>
             <form action="/question" method="get">
+            経過時間{{et}}M<br>
                 <button type="submit" >Next</button>
             </form>  
         {% endif %}
     </div>
+
 
 </body>
 </html>

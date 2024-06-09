@@ -205,6 +205,8 @@ def check_answer():
     start_datetime = datetime.strptime(date_string, '%Y-%m-%d %H:%M:%S')
     elapsed_time = end_datetime - start_datetime
     print(f"{elapsed_time=}")
+    elapsed_time_str = str(elapsed_time)
+    print(f"@209{elapsed_time_str=}")
     print("user_choice=",user_choice)
     # print(f"経過時間: {elapsed_time}")
 
@@ -221,7 +223,7 @@ def check_answer():
     Q = session["Q_no"]
     Q = Q + 1
     session["Q_no"]=Q
-    return render_template('kekka.html', kekka=answer,Q_no=Q)
+    return render_template('kekka.html',et=elapsed_time_str, kekka=answer,Q_no=Q)
 
 # 以下、質問ページなどのルートは省略
 
