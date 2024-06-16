@@ -184,9 +184,9 @@ def question():
         for i, choice in enumerate(result, 1):
             print(i, choice)
         
-        cs_temp = set(q1[2].split(":")) #正解をここで作っておく
-        correct_choices = set(result) & cs_temp
-        session["correct_ans"] = correct_choices
+        cs_temp = set(q1[2].split(":")) #正解をここで作っておく　["ペンギン","カモメ","スズメ"]
+        correct_choices = set(result) & cs_temp #setは集合体　
+        session["correct_ans"] = correct_choices #sessionの中にキーとバリューを入れる
         start_datetime = datetime.now() #今現在の日付型を取得する
         formatted_date_string = start_datetime.strftime('%Y-%m-%d %H:%M:%S') #日付型を文字列に変換する
         session["start_datetime"] = formatted_date_string #文字列にしたことでセッションに保存できる
