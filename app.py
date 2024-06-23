@@ -12,15 +12,6 @@ app.config['SECRET_KEY'] = 'your_secret_key_here'
 app.config['SESSION_TYPE'] = 'filesystem'
 Session(app)
 
-# @app.before_first_request
-# def setup():
-#     print("This runs once before the first request")
-
-# @app.before_first_request
-# def load_questions():
-#     global sets
-#     sets = load_questions_from_file()
-
 # SQLite3データベース接続設定
 def create_db_connection():
     connection = sqlite3.connect('sugizaki.db')
@@ -47,18 +38,6 @@ def authenticate_user(username, password):
             connection.close()
     return False
 
-
-
-# sets = [
-#     ["問題1 今月は何月ですか？", "6月:7月:8月:9月:10月:11月:12月", "10月", "説明1"],
-#     ["問題2 以下の動物の中で鳥はどれ？", "ライオン:象:ペンギン:カンガルー:カモメ:スズメ", "ペンギン:カモメ:スズメ", "ペンギンは鳥の一種ですが、飛べません。"],
-#     ["問題3 最も大きな惑星は？", "地球:火星:木星:金星", "木星", "木星は太陽系で最も大きな惑星です。"],
-#     ["問題4 日本の首都は？", "大阪:東京:福岡:仙台", "東京", "日本の首都は東京です。"],
-#     ["問題5 以下の中で果物はどれ？", "ピーマン:キャベツ:ブロッコリー:メロン:パイナップル:バナナ", "メロン:パイナップル:バナナ", "メロン:パイナップル:バナナは果物の一種ですが、野菜としても扱われることが多いです。"],
-#     ["問題6 以下の言語の中でスペイン語で「こんにちは」は？", "Hello:Bonjour:Halo:Hola", "Hola", "スペイン語で「こんにちは」は「Hola」と言います。"],
-# ]
-
-# def load_questions_from_file():
 with open('quiz_questions.txt', 'r', encoding='utf-8') as file:
     content = file.read().strip()
 questions = content.split('\n\n')
@@ -67,7 +46,7 @@ for question in questions:
     parts = question.split('\n')
     if len(parts) == 4:
         sets.append(parts)
-# return sets
+
 
 # SQLite3データベース接続設定
 def create_db_connection():
@@ -187,6 +166,7 @@ def question():
         cs_temp = set(q1[2].split(":")) #正解をここで作っておく　["ペンギン","カモメ","スズメ"]
         correct_choices = set(result) & cs_temp #setは集合体　
         session["correct_ans"] = correct_choices #sessionの中にキーとバリューを入れる
+        print(f"@165: correct_choices={correct_choices}")  # デバッグ用ログ出力
         start_datetime = datetime.now() #今現在の日付型を取得する
         formatted_date_string = start_datetime.strftime('%Y-%m-%d %H:%M:%S') #日付型を文字列に変換する
         session["start_datetime"] = formatted_date_string #文字列にしたことでセッションに保存できる
@@ -195,7 +175,9 @@ def question():
 
 @app.route('/answer', methods=['GET']) #answerが飛んできたら下のプログラムが実行
 def check_answer():
-    correct_ans=session["correct_ans"]
+    correct_ans = session.get("correct_ans", set())
+    print(f"correct_ans={correct_ans}")  # デバッグ用ログ出力
+    # correct_ans=session["correct_ans"]
     print("correct_ans=",correct_ans)
     user_choice = request.args.getlist('choice[]')
     end_datetime = datetime.now()
@@ -213,12 +195,17 @@ def check_answer():
     correct_set = correct_ans 
     user_set = set(user_choice) #右がbefore、左はafter
 
+
     if user_set == correct_set:
         print("正解")
         answer = "正解"
     else:
-        print("不正解。正しい答えは:", correct_ans)
-        answer = "不正解"
+        if correct_ans:
+            print(f"不正解。正しい答えは: {correct_ans}")
+            answer = f"不正解。正しい答えは: {', '.join(correct_ans)}"
+        else:
+            answer = "不正解"
+
     #Qをプラス
     Q = session["Q_no"]
     Q = Q + 1
@@ -227,9 +214,5 @@ def check_answer():
 
 # 以下、質問ページなどのルートは省略
 
-
 if __name__ == "__main__":
     app.run(debug=True, port=8888)
-
-
-    app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=1)
