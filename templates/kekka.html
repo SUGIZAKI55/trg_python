@@ -12,6 +12,10 @@
     
     </div>
     <div >
+        <p>回答結果: {{ answer }}</p>
+        <p>経過時間: {{ et }}M</p>
+        <p>選択した答え: {{ user_choice }}</p>
+        <p>正しい答え: {{ correct_ans }}</p>
         {% if Q_no==3 %}
             <p>終了</p> 
             <a href="{{ url_for('admin') }}">戻る</a>    
