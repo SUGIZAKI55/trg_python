@@ -12,6 +12,7 @@ def load_questions():
         for line in lines:
             print(f"@=11====={line=}") #デバッグ出力
             parts = line.split('\n')
+            print("@=15",len(parts))
             if len(parts) == 4:
                 questions.append({'title': parts[0], 'choices': parts[1], 'answer': parts[2], 'explanation': parts[3]})
         return questions
@@ -31,6 +32,7 @@ def save_questions(questions):
 @app.route('/editQuiz')
 def index():
     questions = load_questions()
+    print("=====",questions)
     return render_template('e_index.html', questions=questions)
 
 @app.route('/edit/<int:question_id>', methods=['GET', 'POST'])

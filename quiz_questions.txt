@@ -56,4 +56,9 @@ Hola
 問12 今の季節は
 春:夏:秋:冬
 夏
-今は夏ですよ。
+今は夏ですよ
+
+問13 Pythonでファイルを読み込む方法
+1.	open('file.txt', 'r'):2.	read('file.txt'):3.	file.open('file.txt', 'r'):4.	file.read('file.txt')
+1.open('file.txt', 'r'):2.
+Pythonでは、ファイルを読み込むためにopen関数を使用します。open('file.txt', 'r')とすることで、‘file.txt’という名前のファイルを読み取りモード（r）で開くことができます。read関数やfile.openなどの形式は正しくありません。
