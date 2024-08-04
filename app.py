@@ -112,8 +112,9 @@ def question():
             crs = len(arr)
         else:
             crs = 4    
-        result = random.sample(arr, crs)
-
+        result = random.sample(arr, crs) #resultは出題の回答群で要素の数が4つ以下
+        print(f"{result=}")
+        session["result"] = result
         cs_temp = set(q1[2].split(":"))
         correct_choices = set(result) & cs_temp
         session["correct_ans"] = correct_choices
@@ -126,16 +127,26 @@ def question():
 
 @app.route('/answer', methods=['GET'])
 def check_answer():
+    result = session["result"] #問題にセッションを持たせる
     correct_ans = session.get("correct_ans", set())
+    list_correct_ans = list(correct_ans) #集合型を配列にした
+    print(f"{list_correct_ans=}")
+    dic ={}
+    for sentaku in result:
+        if sentaku in list_correct_ans:
+            dic[sentaku] = "○"
+        else:
+            dic[sentaku] = "×"
+    print(dic)
+
     user_choice = request.args.getlist('choice[]')
     end_datetime = datetime.now()
-
     date_string = session["start_datetime"]
     start_datetime = datetime.strptime(date_string, '%Y-%m-%d %H:%M:%S')
     elapsed_time = end_datetime - start_datetime
     elapsed_time_str = str(elapsed_time)
-
     user_set = set(user_choice)
+
 
     if user_set == correct_ans:
         answer = "正解"
