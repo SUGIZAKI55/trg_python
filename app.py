@@ -160,7 +160,7 @@ def check_answer():
     user_choice_str = ', '.join(user_choice)
     correct_ans_str = ', '.join(correct_ans)
 
-    return render_template('kekka.html', answer=answer, et=elapsed_time_str, Q_no=Q, user_choice=user_choice_str, correct_ans=correct_ans_str)
+    return render_template('kekka.html', answer=answer, et=elapsed_time_str, Q_no=Q, user_choice=user_choice_str, correct_ans=correct_ans_str ,dic=dic)
 
 if __name__ == "__main__":
     app.run(debug=True, port=8888)
