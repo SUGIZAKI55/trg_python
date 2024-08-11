@@ -105,7 +105,7 @@ def question():
         return redirect(url_for('login'))
     else:
         Q_no = session["Q_no"]
-        q1 = quiz_questions[Q_no]
+        q1 = quiz_questions[Q_no] #20/08/11エラー箇所
 
         arr = q1[1].split(":")
         if len(arr) < 4:
