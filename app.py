@@ -43,7 +43,7 @@ questions = content.split('\n\n')
 quiz_questions = []
 for question in questions:
     parts = question.split('\n')
-    if len(parts) == 4:
+    if len(parts) == 6:
         quiz_questions.append(parts)
 
 @app.route('/')
@@ -99,15 +99,19 @@ def signup():
                 return render_template('error.html')
     return render_template("signup.html")
 
+@app.route('/farstquestion')
+
+
 @app.route('/question')
 def question():
     if 'username' not in session:
         return redirect(url_for('login'))
     else:
         Q_no = session["Q_no"]
+        print("Q_no===",Q_no)
+        print("quiz_questions===",quiz_questions)
         q1 = quiz_questions[Q_no] #20/08/11エラー箇所
-
-        arr = q1[1].split(":")
+        arr = q1[3].split(":") #回答群
         if len(arr) < 4:
             crs = len(arr)
         else:
@@ -115,7 +119,7 @@ def question():
         result = random.sample(arr, crs) #resultは出題の回答群で要素の数が4つ以下
         print(f"{result=}")
         session["result"] = result
-        cs_temp = set(q1[2].split(":"))
+        cs_temp = set(q1[4].split(":")) #正解群
         correct_choices = set(result) & cs_temp
         session["correct_ans"] = correct_choices
 
@@ -123,7 +127,7 @@ def question():
         formatted_date_string = start_datetime.strftime('%Y-%m-%d %H:%M:%S')
         session["start_datetime"] = formatted_date_string
 
-        return render_template('question.html', question=q1[0], choices=result)
+        return render_template('question.html', question=q1[2], choices=result)
 
 @app.route('/answer', methods=['GET'])
 def check_answer():
