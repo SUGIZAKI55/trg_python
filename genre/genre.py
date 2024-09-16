@@ -23,6 +23,11 @@ def genre2():
     print(f"ジャンル表示:{genre_to_ids=}")#=を出して変数名が表示される
     m = genre_to_ids[s[0]] #キーからバリューを取り出した
     print(f"選択したジャンルの表示:{m=}")
+    number = int(request.form['nanko'])
+    print(f"number:{number=}")
+    random_selection = random.sample(m, number)
+    print(f"ナンバーで設定した問題だけ表示:{random_selection=}") #ランダムで3問取り出した
+
     # for genre_to_ids in genre_to_ids: #: pythonの基本でインデントの前に使われる#
     #     genre_id = genre_to_ids[0]
     #     genre_list = genre_to_ids[1].split(":")

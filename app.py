@@ -12,6 +12,8 @@ app.config['SECRET_KEY'] = 'your_secret_key_here'
 app.config['SESSION_TYPE'] = 'filesystem'
 Session(app)
 
+genre_to_ids = {} #グローバル宣言をした
+
 # SQLite3データベース接続設定
 def create_db_connection():
     connection = sqlite3.connect('sugizaki.db')
@@ -45,6 +47,18 @@ for question in questions:
     parts = question.split('\n')
     if len(parts) == 6:
         quiz_questions.append(parts)
+print(f"@50=={quiz_questions=}")
+for topic in quiz_questions: #: pythonの基本でインデントの前に使われる#
+    topic_id = topic[0]
+    genre_list = topic[1].split(":")
+    
+    for genre in genre_list:
+        # ジャンルに対応するIDリストを更新
+        if genre in genre_to_ids:
+            genre_to_ids[genre].append(topic_id) #配列に追加する場合にappendを使う
+        else:
+            genre_to_ids[genre] = [topic_id]
+print(f"@61=={genre_to_ids=}")
 
 @app.route('/')
 def login_form():
@@ -166,5 +180,69 @@ def check_answer():
 
     return render_template('kekka.html', answer=answer, et=elapsed_time_str, Q_no=Q, user_choice=user_choice_str, correct_ans=correct_ans_str ,dic=dic)
 
+@app.route('/genre') #@~デコレーター、関数を飾るもの
+def genre():
+    error = None
+    print(f"{genre_to_ids=}")
+    return render_template('genre.html', error=error, genre_to_ids=genre_to_ids)
+
+@app.route('/genre2', methods=['POST'])
+def genre2():
+    s = request.form.getlist('t') #{t:C言語}
+    print(f"選択されたジャンル: {s}") #f文字
+    print(f"ジャンル表示:{genre_to_ids=}")#=を出して変数名が表示される
+    m = genre_to_ids[s[0]] #キーからバリューを取り出した
+    print(f"選択したジャンルの表示:{m=}")
+    number = int(request.form['nanko'])
+    print(f"number:{number=}")
+    random_selection = random.sample(m, number)
+    print(f"ナンバーで設定した問題だけ表示:{random_selection=}") #ランダムで3問取り出した
+
+    # for genre_to_ids in genre_to_ids: #: pythonの基本でインデントの前に使われる#
+    #     genre_id = genre_to_ids[0]
+    #     genre_list = genre_to_ids[1].split(":")
+    #     print(f"{genre_id=}")
+    #     print(f"{genre_list=}")
+    # return f"選択されたジャンル: {s}"
+
+
+@app.route('/admin2')
+def admin2():
+    return "Admin Page"
+
+
+# def farst():
+#     topics = [
+#         [1, "C言語:Java:Python"],
+#         [2, "C言語:Ruby:C#"],
+#         [3, "C言語:Python"],
+#         [4, "Java:C#"],
+#         [5, "C++:C#"],
+#         [6, "Go:Python:C言語"],
+#         [7, "Ruby:PHP"],
+#         [8, "PHP:Python:Go"],
+#         [9, "Java:Python:PHP:C#"],
+#         [10, "Java:C#:C++:PHP"],
+#     ]
+#     #ランダム関数を用いてC言語が２問出題となるようにする(9/8に進む）
+
+#     # 各トピックのIDをジャンルごとに分類する辞書
+#     # genre_to_ids = {}
+
+#     for topic in topics: #: pythonの基本でインデントの前に使われる#
+#         topic_id = topic[0]
+#         genre_list = topic[1].split(":")
+        
+#         for genre in genre_list:
+#             # ジャンルに対応するIDリストを更新
+#             if genre in genre_to_ids:
+#                 genre_to_ids[genre].append(topic_id) #配列に追加する場合にappendを使う
+#             else:
+#                 genre_to_ids[genre] = [topic_id]
+
+#     # 結果を表示
+#     print("ジャンルごとのIDリスト:", genre_to_ids)
+
 if __name__ == "__main__":
+    # farst()
     app.run(debug=True, port=8888)
