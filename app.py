@@ -78,7 +78,7 @@ def login():
 
 @app.route('/loginok')
 def loginok():
-    session["Q_no"] = 0
+    session["Q_no"] = 0 #セッションが辞書型{"Q_no":0} ※サーバー側にある
     return redirect(url_for('admin'))
 
 @app.route('/admin')
@@ -130,11 +130,11 @@ def question():
             crs = len(arr)
         else:
             crs = 4    
-        result = random.sample(arr, crs) #resultは出題の回答群で要素の数が4つ以下
+        result = random.sample(arr, crs) #resultは出題の回答群で要素の数が4つ以下 、配列
         print(f"{result=}")
         session["result"] = result
         cs_temp = set(q1[4].split(":")) #正解群
-        correct_choices = set(result) & cs_temp
+        correct_choices = set(result) & cs_temp #setで配列を集合形に変換&
         session["correct_ans"] = correct_choices
 
         start_datetime = datetime.now()
@@ -195,8 +195,29 @@ def genre2():
     print(f"選択したジャンルの表示:{m=}")
     number = int(request.form['nanko'])
     print(f"number:{number=}")
-    random_selection = random.sample(m, number)
-    print(f"ナンバーで設定した問題だけ表示:{random_selection=}") #ランダムで3問取り出した
+    qmap = random.sample(m, number) #qmapは5,13,2
+    print(f"qmap_ナンバーで設定した問題だけ表示:{qmap=}") #ランダムで3問取り出した
+    print(f"qmap index表示:{qmap[0]=}") #ランダムで3問取り出した
+    print(f"問題の表示:{quiz_questions[int(qmap[0])-1][2]=}")
+    return render_template('genre_q.html', question=quiz_questions[int(qmap[0])-1][2])
+    
+    Q_no = session["Q_no"]
+    print("Q_no===",Q_no)
+    print("quiz_questions===",quiz_questions)
+    q1 = quiz_questions[Q_no] 
+    question = q1[2]
+    print("q1===",questions)
+    arr = q1[3].split(":") #回答群
+    if len(arr) < 4:
+        crs = len(arr)
+    else:
+        crs = 4    
+    result = random.sample(arr, crs) #resultは出題の回答群で要素の数が4つ以下
+    print(f"{result=}")
+    session["result"] = result
+    cs_temp = set(q1[4].split(":")) #正解群
+    correct_choices = set(result) & cs_temp
+    session["correct_ans"] = correct_choices
 
     # for genre_to_ids in genre_to_ids: #: pythonの基本でインデントの前に使われる#
     #     genre_id = genre_to_ids[0]
