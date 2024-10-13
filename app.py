@@ -122,6 +122,7 @@ def question():
         return redirect(url_for('login'))
     else:
         Q_no = session["Q_no"]
+        temp = session["Q_no"]
         print("Q_no===",Q_no)
         print("quiz_questions===",quiz_questions)
         qselect1 = quiz_questions[Q_no] #20/08/11エラー箇所
@@ -188,25 +189,59 @@ def genre():
 
 @app.route('/genre2', methods=['POST'])
 def genre2():
-    genre_name = request.form.getlist('category') #{category:C言語}
-    print(f"選択されたジャンル: {genre_name}") #f文字
-    print(f"ジャンル表示:{genre_to_ids=}")#=を出して変数名が表示される
-    q_no = genre_to_ids[genre_name[0]] #キーからバリューを取り出した
-    print(f"選択したジャンルの表示:{q_no=}")
-    number = int(request.form['nanko'])
-    print(f"number:{number=}")
-    qmap = random.sample(q_no, number) #qmapは5,13,2
-    print(f"qmap_ナンバーで設定した問題だけ表示:{qmap=}") #ランダムで3問取り出した
-    print(f"qmap index表示:{qmap[0]=}") #ランダムで3問取り出した
-    # print(f"問題の表示:{quiz_questions[int(qmap[0])-1][2]=}")
-    answer_choices = [3].split(":") #回答群
-    if len(answer_choices) < 4:
-        max_choices = len(answer_choices)
-    else:
-        max_choices = 4    
-    selected_choices = random.sample(answer_choices, max_choices) #selected_choicesは出題の回答群で要素の数が4つ以下
-    print(f"{selected_choices=}")
-    return render_template('genre_q.html', question=quiz_questions[int(qmap[0])-1][2],genre_name=genre_name[0],choices=choices)
+    genre_name = request.form.getlist('category')  # 選択されたジャンルを取得
+    print(f"選択されたジャンル: {genre_name}")
+    print(f"ジャンル表示: {genre_to_ids=}")
+    
+    q_no = genre_to_ids[genre_name[0]]  # 選択されたジャンルに対応する問題のIDリストを取得
+    print(f"選択したジャンルの表示: {q_no=}")
+    
+    number = int(request.form['nanko'])  # 取り出す問題数を取得
+    print(f"number: {number=}")
+    
+    # qmapは、ジャンルに対応する問題IDをランダムに抽出したリスト
+    qmap = random.sample(q_no, number)
+    print(f"qmap: {qmap=}")  # ランダムで抽出された問題のIDリスト
+    
+    # qmapから最初の問題を選択し、その問題文と回答群を取得
+    selected_question = quiz_questions[int(qmap[0]) - 1]  # `qmap[0]` でランダムに選んだ問題IDを使用
+    question_text = selected_question[2]  # 問題文を取得
+    
+    # 回答群を取得し、ランダムに4つまで選ぶ
+    answer_choices = selected_question[3].split(":")
+    if len(answer_choices) > 4:
+        answer_choices = random.sample(answer_choices, 4)  # 最大4つの選択肢を表示
+
+    # インデックス付きの選択肢を作成（リスト内包表記なし）
+    indexed_choices = []  # インデックス付き選択肢を格納するリスト
+    for index, choice in enumerate(answer_choices, start=1):
+        indexed_choices.append((index, choice))  # インデックスと選択肢をタプルとしてリストに追加
+    
+    print(f"インデックス付きの選択肢: {indexed_choices=}")
+    
+    # テンプレートに問題文、ジャンル、インデックス付き選択肢を渡す
+    return render_template('genre_q.html', question=question_text, genre_name=genre_name[0], choices=indexed_choices)
+# @app.route('/genre2', methods=['POST'])
+# def genre2():
+#     genre_name = request.form.getlist('category') #{category:C言語}
+#     print(f"選択されたジャンル: {genre_name}") #f文字
+#     print(f"ジャンル表示:{genre_to_ids=}")#=を出して変数名が表示される
+#     q_no = genre_to_ids[genre_name[0]] #キーからバリューを取り出した
+#     print(f"選択したジャンルの表示:{q_no=}")
+#     number = int(request.form['nanko'])
+#     print(f"number:{number=}")
+#     qmap = random.sample(q_no, number) #qmapは5,13,2
+#     print(f"qmap_ナンバーで設定した問題だけ表示:{qmap=}") #ランダムで3問取り出した
+#     print(f"qmap index表示:{qmap[0]=}") #ランダムで3問取り出した
+#     # print(f"問題の表示:{quiz_questions[int(qmap[0])-1][2]=}")
+#     answer_choices = qselect1[3].split(":") #回答群
+#     if len(answer_choices) < 4:
+#         max_choices = len(answer_choices)
+#     else:
+#         max_choices = 4    
+#     selected_choices = random.sample(answer_choices, max_choices) #selected_choicesは出題の回答群で要素の数が4つ以下
+#     print(f"{selected_choices=}")
+#     return render_template('genre_q.html', question=quiz_questions[int(qmap[0])-1][2],genre_name=genre_name[0],choices=choices)
     
     Q_no = session["Q_no"]
     print("Q_no===",Q_no)
@@ -226,51 +261,10 @@ def genre2():
     correct_choices = set(selected_choices) & correct_answers_temp
     session["correct_ans"] = correct_choices
 
-    # for genre_to_ids in genre_to_ids: #: pythonの基本でインデントの前に使われる#
-    #     genre_id = genre_to_ids[0]
-    #     genre_list = genre_to_ids[1].split(":")
-    #     print(f"{genre_id=}")
-    #     print(f"{genre_list=}")
-    # return f"選択されたジャンル: {s}"
-
 
 @app.route('/admin2')
 def admin2():
     return "Admin Page"
 
-
-# def farst():
-#     topics = [
-#         [1, "C言語:Java:Python"],
-#         [2, "C言語:Ruby:C#"],
-#         [3, "C言語:Python"],
-#         [4, "Java:C#"],
-#         [5, "C++:C#"],
-#         [6, "Go:Python:C言語"],
-#         [7, "Ruby:PHP"],
-#         [8, "PHP:Python:Go"],
-#         [9, "Java:Python:PHP:C#"],
-#         [10, "Java:C#:C++:PHP"],
-#     ]
-#     #ランダム関数を用いてC言語が２問出題となるようにする(9/8に進む）
-
-#     # 各トピックのIDをジャンルごとに分類する辞書
-#     # genre_to_ids = {}
-
-#     for topic in topics: #: pythonの基本でインデントの前に使われる#
-#         topic_id = topic[0]
-#         genre_list = topic[1].split(":")
-        
-#         for genre in genre_list:
-#             # ジャンルに対応するIDリストを更新
-#             if genre in genre_to_ids:
-#                 genre_to_ids[genre].append(topic_id) #配列に追加する場合にappendを使う
-#             else:
-#                 genre_to_ids[genre] = [topic_id]
-
-#     # 結果を表示
-#     print("ジャンルごとのIDリスト:", genre_to_ids)
-
 if __name__ == "__main__":
-    # farst()
     app.run(debug=True, port=8888)
