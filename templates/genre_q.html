@@ -5,12 +5,19 @@
     <title>ジャンル選択クイズ</title>
 </head>
 <body>
-    <h1>{{ question }}</h1>
+    <h1>選択したジャンル：{{ genre_name }}</h1>   
+    <h2>問題:</h2>
+    <p>{{ question }}</p>
+    <h3>選択肢:</h3>
     <form action="/answer" method="GET">
-        {% for x in choices %}
-            <div>
+        {% for choice in choices %}
+        <label>
+            <input type="checkbox" name="choice[]" value="{{ choice }}">
+            {{ choice }}
+        </label><br>
+            <!-- <div>
                 <input type="checkbox" name="choice[]" value="{{ x }}">{{x}}
-            </div> 
+            </div>  -->
         {% endfor %}
         <input type="submit" value="Submit">
     </form>

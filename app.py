@@ -27,9 +27,9 @@ def authenticate_user(username, password):
             cursor = connection.cursor()
             query = "SELECT password_hash FROM users WHERE username = ?"
             cursor.execute(query, (username,))
-            result = cursor.fetchone()
-            if result:
-                hashed_password = result[0]
+            selected_choices = cursor.fetchone()
+            if selected_choices:
+                hashed_password = selected_choices[0]
                 if bcrypt.checkpw(password.encode('utf-8'), hashed_password):
                     return True
         except sqlite3.Error as e:
@@ -124,38 +124,38 @@ def question():
         Q_no = session["Q_no"]
         print("Q_no===",Q_no)
         print("quiz_questions===",quiz_questions)
-        q1 = quiz_questions[Q_no] #20/08/11エラー箇所
-        arr = q1[3].split(":") #回答群
-        if len(arr) < 4:
-            crs = len(arr)
+        qselect1 = quiz_questions[Q_no] #20/08/11エラー箇所
+        answer_choices = qselect1[3].split(":") #回答群
+        if len(answer_choices) < 4:
+            max_choices = len(answer_choices)
         else:
-            crs = 4    
-        result = random.sample(arr, crs) #resultは出題の回答群で要素の数が4つ以下 、配列
-        print(f"{result=}")
-        session["result"] = result
-        cs_temp = set(q1[4].split(":")) #正解群
-        correct_choices = set(result) & cs_temp #setで配列を集合形に変換&
+            max_choices = 4    
+        selected_choices = random.sample(answer_choices, max_choices) #selected_choicesは出題の回答群で要素の数が4つ以下 、配列
+        print(f"{selected_choices=}")
+        session["selected_choices"] = selected_choices
+        correct_answers_temp = set(qselect1[4].split(":")) #正解群
+        correct_choices = set(selected_choices) & correct_answers_temp #setで配列を集合形に変換&
         session["correct_ans"] = correct_choices
 
         start_datetime = datetime.now()
         formatted_date_string = start_datetime.strftime('%Y-%m-%d %H:%M:%S')
         session["start_datetime"] = formatted_date_string
 
-        return render_template('question.html', question=q1[2], choices=result)
+        return render_template('question.html', question=qselect1[2], choices=selected_choices)
 
 @app.route('/answer', methods=['GET'])
 def check_answer():
-    result = session["result"] #問題にセッションを持たせる
+    selected_choices = session["selected_choices"] #問題にセッションを持たせる
     correct_ans = session.get("correct_ans", set())
     list_correct_ans = list(correct_ans) #集合型を配列にした
     print(f"{list_correct_ans=}")
-    dic ={}
-    for sentaku in result:
+    answer_feedback ={}
+    for sentaku in selected_choices:
         if sentaku in list_correct_ans:
-            dic[sentaku] = "○"
+            answer_feedback[sentaku] = "○"
         else:
-            dic[sentaku] = "×"
-    print(dic)
+            answer_feedback[sentaku] = "×"
+    print(answer_feedback)
 
     user_choice = request.args.getlist('choice[]')
     end_datetime = datetime.now()
@@ -178,7 +178,7 @@ def check_answer():
     user_choice_str = ', '.join(user_choice)
     correct_ans_str = ', '.join(correct_ans)
 
-    return render_template('kekka.html', answer=answer, et=elapsed_time_str, Q_no=Q, user_choice=user_choice_str, correct_ans=correct_ans_str ,dic=dic)
+    return render_template('kekka.html', answer=answer, et=elapsed_time_str, Q_no=Q, user_choice=user_choice_str, correct_ans=correct_ans_str ,answer_feedback=answer_feedback)
 
 @app.route('/genre') #@~デコレーター、関数を飾るもの
 def genre():
@@ -188,35 +188,42 @@ def genre():
 
 @app.route('/genre2', methods=['POST'])
 def genre2():
-    s = request.form.getlist('t') #{t:C言語}
-    print(f"選択されたジャンル: {s}") #f文字
+    genre_name = request.form.getlist('category') #{category:C言語}
+    print(f"選択されたジャンル: {genre_name}") #f文字
     print(f"ジャンル表示:{genre_to_ids=}")#=を出して変数名が表示される
-    m = genre_to_ids[s[0]] #キーからバリューを取り出した
-    print(f"選択したジャンルの表示:{m=}")
+    q_no = genre_to_ids[genre_name[0]] #キーからバリューを取り出した
+    print(f"選択したジャンルの表示:{q_no=}")
     number = int(request.form['nanko'])
     print(f"number:{number=}")
-    qmap = random.sample(m, number) #qmapは5,13,2
+    qmap = random.sample(q_no, number) #qmapは5,13,2
     print(f"qmap_ナンバーで設定した問題だけ表示:{qmap=}") #ランダムで3問取り出した
     print(f"qmap index表示:{qmap[0]=}") #ランダムで3問取り出した
-    print(f"問題の表示:{quiz_questions[int(qmap[0])-1][2]=}")
-    return render_template('genre_q.html', question=quiz_questions[int(qmap[0])-1][2])
+    # print(f"問題の表示:{quiz_questions[int(qmap[0])-1][2]=}")
+    answer_choices = [3].split(":") #回答群
+    if len(answer_choices) < 4:
+        max_choices = len(answer_choices)
+    else:
+        max_choices = 4    
+    selected_choices = random.sample(answer_choices, max_choices) #selected_choicesは出題の回答群で要素の数が4つ以下
+    print(f"{selected_choices=}")
+    return render_template('genre_q.html', question=quiz_questions[int(qmap[0])-1][2],genre_name=genre_name[0],choices=choices)
     
     Q_no = session["Q_no"]
     print("Q_no===",Q_no)
     print("quiz_questions===",quiz_questions)
-    q1 = quiz_questions[Q_no] 
-    question = q1[2]
-    print("q1===",questions)
-    arr = q1[3].split(":") #回答群
-    if len(arr) < 4:
-        crs = len(arr)
+    qselect1 = quiz_questions[Q_no] 
+    question = qselect1[2]
+    print("qselect1===",questions)
+    answer_choices = qselect1[3].split(":") #回答群
+    if len(answer_choices) < 4:
+        max_choices = len(answer_choices)
     else:
-        crs = 4    
-    result = random.sample(arr, crs) #resultは出題の回答群で要素の数が4つ以下
-    print(f"{result=}")
-    session["result"] = result
-    cs_temp = set(q1[4].split(":")) #正解群
-    correct_choices = set(result) & cs_temp
+        max_choices = 4    
+    selected_choices = random.sample(answer_choices, max_choices) #selected_choicesは出題の回答群で要素の数が4つ以下
+    print(f"{selected_choices=}")
+    session["selected_choices"] = selected_choices
+    correct_answers_temp = set(qselect1[4].split(":")) #正解群
+    correct_choices = set(selected_choices) & correct_answers_temp
     session["correct_ans"] = correct_choices
 
     # for genre_to_ids in genre_to_ids: #: pythonの基本でインデントの前に使われる#

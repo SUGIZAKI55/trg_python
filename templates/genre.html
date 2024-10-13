@@ -11,7 +11,7 @@
             <ul>
                 {% for genre, ids in genre_to_ids.items() %}
                     <li>
-                        <input type="checkbox" name="t" value="{{ genre }}">
+                        <input type="checkbox" name="category" value="{{ genre }}">
                         <!-- nameはkey -->
                         <strong>{{ genre }}:</strong>
                         {{ ids | length }}
