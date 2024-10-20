@@ -5,7 +5,8 @@
     <title>Month Quiz</title>
 </head>
 <body>
-    <h1>{{ question }}</h1>
+    <h1>選択したジャンル：{{ genre_name }}</h1>   
+    <h2>問題:{{ question }}</h2>
     <form action="/answer" method="GET">
         {% for x in choices %}
             <div>

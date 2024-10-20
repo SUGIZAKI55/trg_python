@@ -113,16 +113,20 @@ def signup():
                 return render_template('error.html')
     return render_template("signup.html")
 
-@app.route('/farstquestion')
+# @app.route('/farstquestion')
 
 
-@app.route('/question')
+@app.route('/question',methods=['POST'])
 def question():
     if 'username' not in session:
         return redirect(url_for('login'))
     else:
         Q_no = session["Q_no"]
-        temp = session["Q_no"]
+        qmap = session["qmap"]
+        Q_no = qmap[Q_no]
+        Q_no = int(Q_no) #文字を数字変換
+        number = session["number"]
+        genre_no = session["genre_no"]
         print("Q_no===",Q_no)
         print("quiz_questions===",quiz_questions)
         qselect1 = quiz_questions[Q_no] #20/08/11エラー箇所
@@ -142,7 +146,11 @@ def question():
         formatted_date_string = start_datetime.strftime('%Y-%m-%d %H:%M:%S')
         session["start_datetime"] = formatted_date_string
 
-        return render_template('question.html', question=qselect1[2], choices=selected_choices)
+        genre_name = request.form.getlist('category')  # 選択されたジャンルを取得
+        print(f"選択されたジャンル: {genre_name}")
+        print(f"ジャンル表示: {genre_to_ids=}")
+
+        return render_template('question.html', question=qselect1[2], choices=selected_choices,genre_name=genre_name)
 
 @app.route('/answer', methods=['GET'])
 def check_answer():
@@ -172,7 +180,7 @@ def check_answer():
     else:
         answer = f"不正解。正しい答えは: {', '.join(correct_ans)}"
 
-    Q = session["Q_no"]
+    Q = session["Q_no"] #1問目が終わったら大元のインデックスに+1される
     Q += 1
     session["Q_no"] = Q
 
@@ -193,16 +201,19 @@ def genre2():
     print(f"選択されたジャンル: {genre_name}")
     print(f"ジャンル表示: {genre_to_ids=}")
     
-    q_no = genre_to_ids[genre_name[0]]  # 選択されたジャンルに対応する問題のIDリストを取得
-    print(f"選択したジャンルの表示: {q_no=}")
+    genre_no = genre_to_ids[genre_name[0]]  # 選択されたジャンルに対応する問題のIDリストを取得
+    print(f"選択したジャンルの表示: {genre_no=}")
+    session["genre_no"]=genre_no
     
     number = int(request.form['nanko'])  # 取り出す問題数を取得
     print(f"number: {number=}")
+    session["number"]=number
     
     # qmapは、ジャンルに対応する問題IDをランダムに抽出したリスト
-    qmap = random.sample(q_no, number)
+    qmap = random.sample(genre_no, number)
     print(f"qmap: {qmap=}")  # ランダムで抽出された問題のIDリスト
-    
+    session["qmap"]=qmap
+
     # qmapから最初の問題を選択し、その問題文と回答群を取得
     selected_question = quiz_questions[int(qmap[0]) - 1]  # `qmap[0]` でランダムに選んだ問題IDを使用
     question_text = selected_question[2]  # 問題文を取得
@@ -226,11 +237,11 @@ def genre2():
 #     genre_name = request.form.getlist('category') #{category:C言語}
 #     print(f"選択されたジャンル: {genre_name}") #f文字
 #     print(f"ジャンル表示:{genre_to_ids=}")#=を出して変数名が表示される
-#     q_no = genre_to_ids[genre_name[0]] #キーからバリューを取り出した
-#     print(f"選択したジャンルの表示:{q_no=}")
+#     genre_no = genre_to_ids[genre_name[0]] #キーからバリューを取り出した
+#     print(f"選択したジャンルの表示:{genre_no=}")
 #     number = int(request.form['nanko'])
 #     print(f"number:{number=}")
-#     qmap = random.sample(q_no, number) #qmapは5,13,2
+#     qmap = random.sample(genre_no, number) #qmapは5,13,2
 #     print(f"qmap_ナンバーで設定した問題だけ表示:{qmap=}") #ランダムで3問取り出した
 #     print(f"qmap index表示:{qmap[0]=}") #ランダムで3問取り出した
 #     # print(f"問題の表示:{quiz_questions[int(qmap[0])-1][2]=}")
@@ -242,24 +253,23 @@ def genre2():
 #     selected_choices = random.sample(answer_choices, max_choices) #selected_choicesは出題の回答群で要素の数が4つ以下
 #     print(f"{selected_choices=}")
 #     return render_template('genre_q.html', question=quiz_questions[int(qmap[0])-1][2],genre_name=genre_name[0],choices=choices)
-    
-    Q_no = session["Q_no"]
-    print("Q_no===",Q_no)
-    print("quiz_questions===",quiz_questions)
-    qselect1 = quiz_questions[Q_no] 
-    question = qselect1[2]
-    print("qselect1===",questions)
-    answer_choices = qselect1[3].split(":") #回答群
-    if len(answer_choices) < 4:
-        max_choices = len(answer_choices)
-    else:
-        max_choices = 4    
-    selected_choices = random.sample(answer_choices, max_choices) #selected_choicesは出題の回答群で要素の数が4つ以下
-    print(f"{selected_choices=}")
-    session["selected_choices"] = selected_choices
-    correct_answers_temp = set(qselect1[4].split(":")) #正解群
-    correct_choices = set(selected_choices) & correct_answers_temp
-    session["correct_ans"] = correct_choices
+    # Q_no = session["Q_no"]
+    # print("Q_no===",Q_no)
+    # print("quiz_questions===",quiz_questions)
+    # qselect1 = quiz_questions[Q_no] 
+    # question = qselect1[2]
+    # print("qselect1===",questions)
+    # answer_choices = qselect1[3].split(":") #回答群
+    # if len(answer_choices) < 4:
+    #     max_choices = len(answer_choices)
+    # else:
+    #     max_choices = 4    
+    # selected_choices = random.sample(answer_choices, max_choices) #selected_choicesは出題の回答群で要素の数が4つ以下
+    # print(f"{selected_choices=}")
+    # session["selected_choices"] = selected_choices
+    # correct_answers_temp = set(qselect1[4].split(":")) #正解群
+    # correct_choices = set(selected_choices) & correct_answers_temp
+    # session["correct_ans"] = correct_choices
 
 
 @app.route('/admin2')
