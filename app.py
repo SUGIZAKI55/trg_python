@@ -116,7 +116,7 @@ def signup():
 # @app.route('/farstquestion')
 
 
-@app.route('/question',methods=['POST'])
+@app.route('/question',methods=['GET'])
 def question():
     if 'username' not in session:
         return redirect(url_for('login'))
@@ -146,9 +146,10 @@ def question():
         formatted_date_string = start_datetime.strftime('%Y-%m-%d %H:%M:%S')
         session["start_datetime"] = formatted_date_string
 
-        genre_name = request.form.getlist('category')  # 選択されたジャンルを取得
-        print(f"選択されたジャンル: {genre_name}")
-        print(f"ジャンル表示: {genre_to_ids=}")
+        genre_name = session["genre_name"]
+        # genre_name = request.form.getlist('category')  # 選択されたジャンルを取得
+        # print(f"選択されたジャンル: {genre_name}")
+        # print(f"ジャンル表示: {genre_to_ids=}")
 
         return render_template('question.html', question=qselect1[2], choices=selected_choices,genre_name=genre_name)
 
@@ -195,11 +196,12 @@ def genre():
     print(f"{genre_to_ids=}")
     return render_template('genre.html', error=error, genre_to_ids=genre_to_ids)
 
-@app.route('/genre2', methods=['POST'])
-def genre2():
+@app.route('/firstquestion', methods=['POST'])
+def firstquestion():
     genre_name = request.form.getlist('category')  # 選択されたジャンルを取得
     print(f"選択されたジャンル: {genre_name}")
     print(f"ジャンル表示: {genre_to_ids=}")
+    session["genre_name"]=genre_name
     
     genre_no = genre_to_ids[genre_name[0]]  # 選択されたジャンルに対応する問題のIDリストを取得
     print(f"選択したジャンルの表示: {genre_no=}")
@@ -214,63 +216,10 @@ def genre2():
     print(f"qmap: {qmap=}")  # ランダムで抽出された問題のIDリスト
     session["qmap"]=qmap
 
-    # qmapから最初の問題を選択し、その問題文と回答群を取得
-    selected_question = quiz_questions[int(qmap[0]) - 1]  # `qmap[0]` でランダムに選んだ問題IDを使用
-    question_text = selected_question[2]  # 問題文を取得
-    
-    # 回答群を取得し、ランダムに4つまで選ぶ
-    answer_choices = selected_question[3].split(":")
-    if len(answer_choices) > 4:
-        answer_choices = random.sample(answer_choices, 4)  # 最大4つの選択肢を表示
+    Q_no = 0
+    session["Q_no"] = Q_no
 
-    # インデックス付きの選択肢を作成（リスト内包表記なし）
-    indexed_choices = []  # インデックス付き選択肢を格納するリスト
-    for index, choice in enumerate(answer_choices, start=1):
-        indexed_choices.append((index, choice))  # インデックスと選択肢をタプルとしてリストに追加
-    
-    print(f"インデックス付きの選択肢: {indexed_choices=}")
-    
-    # テンプレートに問題文、ジャンル、インデックス付き選択肢を渡す
-    return render_template('genre_q.html', question=question_text, genre_name=genre_name[0], choices=indexed_choices)
-# @app.route('/genre2', methods=['POST'])
-# def genre2():
-#     genre_name = request.form.getlist('category') #{category:C言語}
-#     print(f"選択されたジャンル: {genre_name}") #f文字
-#     print(f"ジャンル表示:{genre_to_ids=}")#=を出して変数名が表示される
-#     genre_no = genre_to_ids[genre_name[0]] #キーからバリューを取り出した
-#     print(f"選択したジャンルの表示:{genre_no=}")
-#     number = int(request.form['nanko'])
-#     print(f"number:{number=}")
-#     qmap = random.sample(genre_no, number) #qmapは5,13,2
-#     print(f"qmap_ナンバーで設定した問題だけ表示:{qmap=}") #ランダムで3問取り出した
-#     print(f"qmap index表示:{qmap[0]=}") #ランダムで3問取り出した
-#     # print(f"問題の表示:{quiz_questions[int(qmap[0])-1][2]=}")
-#     answer_choices = qselect1[3].split(":") #回答群
-#     if len(answer_choices) < 4:
-#         max_choices = len(answer_choices)
-#     else:
-#         max_choices = 4    
-#     selected_choices = random.sample(answer_choices, max_choices) #selected_choicesは出題の回答群で要素の数が4つ以下
-#     print(f"{selected_choices=}")
-#     return render_template('genre_q.html', question=quiz_questions[int(qmap[0])-1][2],genre_name=genre_name[0],choices=choices)
-    # Q_no = session["Q_no"]
-    # print("Q_no===",Q_no)
-    # print("quiz_questions===",quiz_questions)
-    # qselect1 = quiz_questions[Q_no] 
-    # question = qselect1[2]
-    # print("qselect1===",questions)
-    # answer_choices = qselect1[3].split(":") #回答群
-    # if len(answer_choices) < 4:
-    #     max_choices = len(answer_choices)
-    # else:
-    #     max_choices = 4    
-    # selected_choices = random.sample(answer_choices, max_choices) #selected_choicesは出題の回答群で要素の数が4つ以下
-    # print(f"{selected_choices=}")
-    # session["selected_choices"] = selected_choices
-    # correct_answers_temp = set(qselect1[4].split(":")) #正解群
-    # correct_choices = set(selected_choices) & correct_answers_temp
-    # session["correct_ans"] = correct_choices
-
+    return render_template('first.html')
 
 @app.route('/admin2')
 def admin2():

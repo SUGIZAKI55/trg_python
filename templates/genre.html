@@ -7,7 +7,7 @@
     <h1>ジャンルごとのトピック一覧</h1>
     
     {% if genre_to_ids %}
-        <form action="{{ url_for('question') }}" method="post">
+        <form action="{{ url_for('firstquestion') }}" method="post">
             <ul>
                 {% for genre, ids in genre_to_ids.items() %}
                     <li>
