@@ -29,11 +29,11 @@ def save_questions(questions):
     except Exception as e:
         print(f"Error saving questions: {e}")
 
-@app.route('/editQuiz')
+@app.route('/q_list')
 def index():
     questions = load_questions()
     print("=====",questions)
-    return render_template('e_index.html', questions=questions)
+    return render_template('q_list.html', questions=questions)
 
 @app.route('/edit/<int:question_id>', methods=['GET', 'POST'])
 def edit_question(question_id):
