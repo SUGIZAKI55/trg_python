@@ -126,9 +126,9 @@ def question():
         print(f"@126 {Q_no=} {qmap=}")
         qmaped_Q_no = qmap[Q_no]
         qmaped_Q_no = int(qmaped_Q_no) #文字を数字変換
-        number = session["number"]
-        genre_no = session["genre_no"]
-        print("qmaped_Q_no=",qmaped_Q_no)
+        # number = session["number"]
+        # genre_no = session["genre_no"]
+        # print("qmaped_Q_no=",qmaped_Q_no)
         # print("quiz_questions===",quiz_questions)
         quiz_item = quiz_questions[qmaped_Q_no] #quiz_questionsから1つ取り出したもの
         answer_choices = quiz_item[3].split(":") #回答群
