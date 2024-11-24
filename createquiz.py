@@ -7,12 +7,12 @@ def load_questions():
     try:
         with open('quiz_questions.txt', 'r', encoding='utf-8') as file:
             lines = file.read().split('\n\n') #ファイルを読んで、2改行があったら分ける
-        print(f"@=9====={lines=}") #デバッグ出力
+        # print(f"@=9====={lines=}") #デバッグ出力
         questions = [] 
         for line in lines:
-            print(f"@=11====={line=}") #デバッグ出力
+            # print(f"@=11====={line=}") #デバッグ出力
             parts = line.split('\n')
-            print("@=15",len(parts))
+            # print("@=15",len(parts))
             if len(parts) == 6:
                 questions.append({'Q_no':parts[0],'genre':parts[1],'title': parts[2], 'choices': parts[3], 'answer': parts[4], 'explanation': parts[5]})
         return questions
@@ -24,15 +24,22 @@ def load_questions():
 def save_questions(questions):
     try:
         with open('quiz_questions.txt', 'w', encoding='utf-8') as file:
-            for q in questions:
-                file.write(f"{q['title']}\n{q['choices']}\n{q['answer']}\n{q['explanation']}\n\n")
+            for i,q in enumerate(questions):
+                if i<5:
+                    print("q=",q)
+                file.write(f"{q['Q_no']}\n{q['genre']}\n{q['title']}\n{q['choices']}\n{q['answer']}\n{q['explanation']}\n\n")
     except Exception as e:
         print(f"Error saving questions: {e}")
 
 @app.route('/q_list')
-def index():
+def q_list():
     questions = load_questions()
     print("=====",questions)
+    return render_template('q_list.html', questions=questions)
+
+@app.route('/editQuiz')
+def editQuiz():
+    questions = load_questions()
     return render_template('q_list.html', questions=questions)
 
 @app.route('/edit/<int:question_id>', methods=['GET', 'POST'])
@@ -45,7 +52,7 @@ def edit_question(question_id):
         questions[question_id]['answer'] = request.form['answer']
         questions[question_id]['explanation'] = request.form['explanation']
         save_questions(questions)
-        return redirect(url_for('index'))
+        return redirect(url_for('admin'))
     return render_template('edit.html', question=questions[question_id], question_id=question_id)
 
 @app.route('/createQuiz')
