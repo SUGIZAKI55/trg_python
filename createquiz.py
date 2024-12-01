@@ -62,7 +62,7 @@ def index2():
 @app.route('/createQuiz2',methods = ['POST'])
 def createQuiz2():
     title = request.form.get('title')
-    genre = request.form.get('genre')
+    genre = request.xorm.get('genre')
     choices = request.form.get('choices')
     answer = request.form.get('answer')
     explanation = request.form.get('explanation') or "なし"  # 空の場合はデフォルト値
