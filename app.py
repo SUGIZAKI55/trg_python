@@ -79,10 +79,20 @@ def login():
 @app.route('/loginok')
 def loginok():
     session["Q_no"] = 0 #セッションが辞書型{"Q_no":0} ※サーバー側にある
-    return redirect(url_for('admin'))
+    if 'username' in session:
+        username = session['username']  # セッションからユーザー名を取得
+        return render_template('admin.html', username=username)
+    else:
+        return redirect(url_for('login_form'))
+
 
 @app.route('/admin')
 def admin():
+    if 'username' in session:  # セッションからユーザー名を取得
+        username = session['username']
+        return render_template('admin.html', username=username)
+    else:
+        return redirect(url_for('login_form'))  # ログイン画面へリダイレクト
     return render_template('admin.html')
 
 @app.route('/logout')
@@ -113,69 +123,92 @@ def signup():
                 return render_template('error.html')
     return render_template("signup.html")
 
-# @app.route('/farstquestion')
-
-
-@app.route('/question',methods=['GET'])
+@app.route('/question', methods=['GET'])
 def question():
+    # ユーザーがログインしていない場合はログインページにリダイレクト
     if 'username' not in session:
         return redirect(url_for('login'))
     else:
+        # 現在の問題番号をセッションから取得
         Q_no = session["Q_no"]
+
+        # 現在のジャンルに対応する問題のマッピングをセッションから取得
         qmap = session["qmap"]
-        print(f"@126 {Q_no=} {qmap=}")
+
+        # 現在の問題番号から対応する問題IDを取得
         qmaped_Q_no = qmap[Q_no]
-        qmaped_Q_no = int(qmaped_Q_no) #文字を数字変換
-        # number = session["number"]
-        # genre_no = session["genre_no"]
-        # print("qmaped_Q_no=",qmaped_Q_no)
-        # print("quiz_questions===",quiz_questions)
-        quiz_item = quiz_questions[qmaped_Q_no] #quiz_questionsから1つ取り出したもの
-        answer_choices = quiz_item[3].split(":") #回答群
+        qmaped_Q_no = int(qmaped_Q_no)  # 文字列を整数に変換
+
+        # 対応する問題を `quiz_questions` から取り出す
+        quiz_item = quiz_questions[qmaped_Q_no]  # `quiz_questions` から1つの問題を取得
+
+        # 回答群を取得し、':'で分割してリスト化
+        answer_choices = quiz_item[3].split(":")
+
+        # 回答群の数が4未満の場合はその数まで、4以上の場合は最大4つを選択肢としてランダム抽出
         if len(answer_choices) < 4:
             max_choices = len(answer_choices)
         else:
-            max_choices = 4    
-        selected_choices = random.sample(answer_choices, max_choices) #selected_choicesは出題の回答群で要素の数が4つ以下 、配列
-        # print(f"{selected_choices=}")
-        session["selected_choices"] = selected_choices
-        correct_answers_temp = set(quiz_item[4].split(":")) #正解群
-        correct_choices = set(selected_choices) & correct_answers_temp #setで配列を集合形に変換&
-        session["correct_ans"] = correct_choices
+            max_choices = 4
+        selected_choices = random.sample(answer_choices, max_choices)  # ランダムで選択肢を抽出
 
+        # 選択肢をセッションに保存
+        session["selected_choices"] = selected_choices
+
+        # 正解群をセットに変換（重複を排除）
+        correct_answers_temp = set(quiz_item[4].split(":"))  # 正解群を取得
+        correct_choices = set(selected_choices) & correct_answers_temp  # 選択肢と正解群の共通部分を取得
+        session["correct_ans"] = correct_choices  # 正解をセッションに保存
+
+        # 問題が開始された日時をセッションに保存
         start_datetime = datetime.now()
-        formatted_date_string = start_datetime.strftime('%Y-%m-%d %H:%M:%S')
+        formatted_date_string = start_datetime.strftime('%Y-%m-%d %H:%M:%S')  # 日時をフォーマット
         session["start_datetime"] = formatted_date_string
 
+        # 現在選択されたジャンル名をセッションから取得
         genre_name = session["genre_name"]
-        # genre_name = request.form.getlist('category')  # 選択されたジャンルを取得
-        # print(f"選択されたジャンル: {genre_name}")
-        # print(f"ジャンル表示: {genre_to_ids=}")
 
-        return render_template('question.html', question=quiz_item[2], choices=selected_choices,genre_name=genre_name)
+        # 質問テンプレートをレンダリングし、必要なデータを渡す
+        return render_template(
+            'question.html',
+            question=quiz_item[2],  # 問題文
+            choices=selected_choices,  # 選択肢
+            genre_name=genre_name  # ジャンル名
+        )
 
 @app.route('/answer', methods=['GET'])
 def check_answer():
-    selected_choices = session["selected_choices"] #問題にセッションを持たせる
+    # 選択された回答をセッションから取得
+    selected_choices = session["selected_choices"]  # 問題の選択肢がセッションに保存されている
+    
+    # セッションから正解を取得。正解が無い場合、デフォルトで空の集合（set）を返す
     correct_ans = session.get("correct_ans", set())
-    list_correct_ans = list(correct_ans) #集合型を配列にした
-    print(f"{list_correct_ans=}")
-    answer_feedback ={}
-    for sentaku in selected_choices:
-        if sentaku in list_correct_ans:
-            answer_feedback[sentaku] = "○"
+    
+    # 正解をリストに変換（後の処理でリスト操作を行うため）
+    list_correct_ans = list(correct_ans)
+    print(f"{list_correct_ans=}")  # デバッグ用出力
+    
+    # 選択肢ごとの正誤を保持する辞書
+    answer_feedback = {}
+    for sentaku in selected_choices:  # ユーザーに表示された選択肢を1つずつチェック
+        if sentaku in list_correct_ans:  # 選択肢が正解に含まれているかどうかを確認
+            answer_feedback[sentaku] = "○"  # 正解の場合
         else:
-            answer_feedback[sentaku] = "×"
-    print(answer_feedback)
+            answer_feedback[sentaku] = "×"  # 不正解の場合
+    print(answer_feedback)  # 選択肢ごとの正誤結果をデバッグ出力
 
-    user_choice = request.args.getlist('choice[]')
-    end_datetime = datetime.now()
-    date_string = session["start_datetime"]
-    start_datetime = datetime.strptime(date_string, '%Y-%m-%d %H:%M:%S')
-    elapsed_time = end_datetime - start_datetime
-    elapsed_time_str = str(elapsed_time)
+    # ユーザーが選択した回答をリクエストパラメータから取得
+    user_choice = request.args.getlist('choice[]')  # フォームから送られてきたデータをリスト形式で取得
+
+    # 現在の日時を取得して、回答時間を計算
+    end_datetime = datetime.now()  # 回答が終了した時刻
+    date_string = session["start_datetime"]  # セッションに保存されている開始時刻
+    start_datetime = datetime.strptime(date_string, '%Y-%m-%d %H:%M:%S')  # 開始時刻を文字列から日時オブジェクトに変換
+    elapsed_time = end_datetime - start_datetime  # 経過時間を計算
+    elapsed_time_str = str(elapsed_time)  # 経過時間を文字列としてフォーマット
+
+    # ユーザーが選択した回答を集合（set）として変換（重複を排除するため）
     user_set = set(user_choice)
-
 
     if user_set == correct_ans:
         answer = "正解"
