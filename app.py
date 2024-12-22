@@ -1,4 +1,5 @@
 import random
+import json
 from flask import Flask, redirect, url_for, render_template, request, session
 from flask_session import Session
 import sqlite3
@@ -176,38 +177,82 @@ def question():
             genre_name=genre_name  # ジャンル名
         )
 
+# @app.route('/answer', methods=['GET'])
+# def check_answer():
+#     # 選択された回答をセッションから取得
+#     selected_choices = session["selected_choices"]  # 問題の選択肢がセッションに保存されている
+    
+#     # セッションから正解を取得。正解が無い場合、デフォルトで空の集合（set）を返す
+#     correct_ans = session.get("correct_ans", set())
+    
+#     # 正解をリストに変換（後の処理でリスト操作を行うため）
+#     list_correct_ans = list(correct_ans)
+#     print(f"{list_correct_ans=}")  # デバッグ用出力
+    
+#     # 選択肢ごとの正誤を保持する辞書
+#     answer_feedback = {}
+#     for sentaku in selected_choices:  # ユーザーに表示された選択肢を1つずつチェック
+#         if sentaku in list_correct_ans:  # 選択肢が正解に含まれているかどうかを確認
+#             answer_feedback[sentaku] = "○"  # 正解の場合
+#         else:
+#             answer_feedback[sentaku] = "×"  # 不正解の場合
+#     print(answer_feedback)  # 選択肢ごとの正誤結果をデバッグ出力
+
+#     # ユーザーが選択した回答をリクエストパラメータから取得
+#     user_choice = request.args.getlist('choice[]')  # フォームから送られてきたデータをリスト形式で取得
+
+#     # 現在の日時を取得して、回答時間を計算
+#     end_datetime = datetime.now()  # 回答が終了した時刻
+#     date_string = session["start_datetime"]  # セッションに保存されている開始時刻
+#     start_datetime = datetime.strptime(date_string, '%Y-%m-%d %H:%M:%S')  # 開始時刻を文字列から日時オブジェクトに変換
+#     elapsed_time = end_datetime - start_datetime  # 経過時間を計算
+#     elapsed_time_str = str(elapsed_time)  # 経過時間を文字列としてフォーマット
+
+#     # ユーザーが選択した回答を集合（set）として変換（重複を排除するため）
+#     user_set = set(user_choice)
+
+#     if user_set == correct_ans:
+#         answer = "正解"
+#     else:
+#         answer = f"不正解。正しい答えは: {', '.join(correct_ans)}"
+
+#     Q = session["Q_no"] #1問目が終わったら大元のインデックスに+1される
+#     Q += 1
+#     session["Q_no"] = Q
+
+#     user_choice_str = ', '.join(user_choice)
+#     correct_ans_str = ', '.join(correct_ans)
+
+#     log_file_name = 'session_log.ndjson'
+#     log_dic_name = {}
+#     # log_dic_name = {
+#     # "date": "2024/12/15",
+#     # "name": "sugizaki",
+#     # "genre": "文化",
+#     # "qmap": [1, 2, 3],
+#     # "start_time": "10:00",
+#     # "end_time": "10:10",
+#     # "result": "正解"
+#     # }
+#     return render_template('kekka.html', answer=answer, et=elapsed_time_str, Q_no=Q, user_choice=user_choice_str, correct_ans=correct_ans_str ,answer_feedback=answer_feedback)
+
+def log_w(data):
+    with open('seiseki.ndjson', 'a', encoding='utf-8') as file:
+        json_string = json.dumps(data, ensure_ascii=False)  # JSON文字列に変換
+        file.write(json_string + '\n')  # 改行を追加して書き込む
+        print("データを改行区切りJSON形式で保存しました。")
+
 @app.route('/answer', methods=['GET'])
 def check_answer():
     # 選択された回答をセッションから取得
-    selected_choices = session["selected_choices"]  # 問題の選択肢がセッションに保存されている
-    
-    # セッションから正解を取得。正解が無い場合、デフォルトで空の集合（set）を返す
+    selected_choices = session["selected_choices"]
     correct_ans = session.get("correct_ans", set())
-    
-    # 正解をリストに変換（後の処理でリスト操作を行うため）
-    list_correct_ans = list(correct_ans)
-    print(f"{list_correct_ans=}")  # デバッグ用出力
-    
-    # 選択肢ごとの正誤を保持する辞書
-    answer_feedback = {}
-    for sentaku in selected_choices:  # ユーザーに表示された選択肢を1つずつチェック
-        if sentaku in list_correct_ans:  # 選択肢が正解に含まれているかどうかを確認
-            answer_feedback[sentaku] = "○"  # 正解の場合
-        else:
-            answer_feedback[sentaku] = "×"  # 不正解の場合
-    print(answer_feedback)  # 選択肢ごとの正誤結果をデバッグ出力
-
-    # ユーザーが選択した回答をリクエストパラメータから取得
-    user_choice = request.args.getlist('choice[]')  # フォームから送られてきたデータをリスト形式で取得
-
-    # 現在の日時を取得して、回答時間を計算
-    end_datetime = datetime.now()  # 回答が終了した時刻
-    date_string = session["start_datetime"]  # セッションに保存されている開始時刻
-    start_datetime = datetime.strptime(date_string, '%Y-%m-%d %H:%M:%S')  # 開始時刻を文字列から日時オブジェクトに変換
-    elapsed_time = end_datetime - start_datetime  # 経過時間を計算
-    elapsed_time_str = str(elapsed_time)  # 経過時間を文字列としてフォーマット
-
-    # ユーザーが選択した回答を集合（set）として変換（重複を排除するため）
+    user_choice = request.args.getlist('choice[]')
+    end_datetime = datetime.now()
+    date_string = session["start_datetime"]
+    start_datetime = datetime.strptime(date_string, '%Y-%m-%d %H:%M:%S')
+    elapsed_time = end_datetime - start_datetime
+    elapsed_time_str = str(elapsed_time)
     user_set = set(user_choice)
 
     if user_set == correct_ans:
@@ -215,14 +260,34 @@ def check_answer():
     else:
         answer = f"不正解。正しい答えは: {', '.join(correct_ans)}"
 
-    Q = session["Q_no"] #1問目が終わったら大元のインデックスに+1される
+    Q = session["Q_no"]
     Q += 1
     session["Q_no"] = Q
 
     user_choice_str = ', '.join(user_choice)
     correct_ans_str = ', '.join(correct_ans)
 
-    return render_template('kekka.html', answer=answer, et=elapsed_time_str, Q_no=Q, user_choice=user_choice_str, correct_ans=correct_ans_str ,answer_feedback=answer_feedback)
+    data = {
+        "date": "2024/12/15",
+        "name": "sugizaki",
+        "genre": "文化",
+        "qmap": [1, 2, 3],
+        "start_time": "10:00",
+        "end_time": "10:10",
+        "result": "正解"
+    }
+    log_w(data)
+
+    return render_template(
+        'kekka.html',
+        answer=answer,
+        et=elapsed_time_str,
+        Q_no=Q,
+        user_choice=user_choice_str,
+        correct_ans=correct_ans_str,
+        answer_feedback={c: ("○" if c in correct_ans else "×") for c in selected_choices}
+    )
+
 
 @app.route('/genre') #@~デコレーター、関数を飾るもの
 def genre():
