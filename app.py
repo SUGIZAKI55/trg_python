@@ -268,13 +268,16 @@ def check_answer():
     correct_ans_str = ', '.join(correct_ans)
 
     data = {
-        "date": "2024/12/15",
-        "name": "sugizaki",
-        "genre": "文化",
-        "qmap": [1, 2, 3],
-        "start_time": "10:00",
-        "end_time": "10:10",
-        "result": "正解"
+        "date": datetime.now().strftime('%Y-%m-%d'),
+        "name": session.get("username", "不明"),
+        "genre": ', '.join(session["genre_name"]),
+        "qmap": session["qmap"],
+        "start_time": start_datetime.strftime('%H:%M:%S'),
+        "end_time": end_datetime.strftime('%H:%M:%S'),
+        "elapsed_time": elapsed_time_str,
+        "user_choice": user_choice,
+        "correct_answers": list(correct_ans),
+        "result": answer
     }
     log_w(data)
 
