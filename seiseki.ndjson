@@ -1,7 +1,4 @@
-{"date": "2024/12/15", "name": "sugizaki", "genre": "文化", "qmap": [1, 2, 3], "start_time": "10:00", "end_time": "10:10", "result": "正解"}
-{"date": "2024/12/15", "name": "sugizaki", "genre": "文化", "qmap": [1, 2, 3], "start_time": "10:00", "end_time": "10:10", "result": "正解"}
-{"date": "2024/12/15", "name": "sugizaki", "genre": "文化", "qmap": [1, 2, 3], "start_time": "10:00", "end_time": "10:10", "result": "正解"}
-{"date": "2024/12/15", "name": "sugizaki", "genre": "文化", "qmap": [1, 2, 3], "start_time": "10:00", "end_time": "10:10", "result": "正解"}
-{"date": "2024-12-29 18:23:58", "name": "satoshi", "genre": "文化", "qmap": [1, 2, 3], "start_time": "10:00", "end_time": "10:10", "result": "正解"}
 {"date": "2024-12-29", "name": "satoshi", "genre": "文化  ", "qmap": ["2  ", "7  "], "start_time": "18:40:16", "end_time": "18:40:22", "elapsed_time": "0:00:06.025185", "user_choice": ["ごはん", "味噌汁"], "correct_answers": ["ごはん", "パン"], "result": "不正解。正しい答えは: ごはん, パン"}
 {"date": "2024-12-29", "name": "satoshi", "genre": "文化  ", "qmap": ["2  ", "7  "], "start_time": "18:40:23", "end_time": "18:40:28", "elapsed_time": "0:00:05.497242", "user_choice": ["お正月", "七夕", "お盆"], "correct_answers": ["七夕", "お正月"], "result": "不正解。正しい答えは: 七夕, お正月"}
+{"date": "2024-12-29", "name": "satoshi", "genre": "文化  ", "qmap": ["9  ", "7  "], "start_time": "19:29:15", "end_time": "19:29:20", "elapsed_time": "0:00:05.013982", "user_choice": ["緑茶", "日本酒"], "correct_answers": ["日本酒", "緑茶"], "result": "正解"}
+{"date": "2024-12-29", "name": "satoshi", "genre": "文化  ", "qmap": ["9  ", "7  "], "start_time": "19:29:22", "end_time": "19:29:25", "elapsed_time": "0:00:03.804268", "user_choice": ["お正月", "七夕"], "correct_answers": ["七夕", "お正月"], "result": "正解"}
