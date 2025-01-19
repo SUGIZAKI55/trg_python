@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>正答率の表示</title>
+</head>
+<body>
+    <h1>正答率の結果</h1>
+
+    <!-- template_dataを表示 -->
+    <div>
+        <h2>テンプレートデータ</h2>
+        <p>{{ template_data }}</p>
+    </div>
+
+    <!-- resultsの詳細を表示 -->
+    <div>
+        <h2>名前とジャンル別正答率</h2>
+        {% if ans %}
+                <div>
+                    <ul>
+                        {% for genre, data in ans.items() %}
+                            <li>
+                                ジャンル: {{ genre }}<br>
+                                正答率: {{ (data.correct / data.total) * 100 | round(2) }}% 
+                                ({{ data.correct }}/{{ data.total }})
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+        {% else %}
+            <p>データがありません。</p>
+        {% endif %}
+    </div>
+</body>
+</html>
