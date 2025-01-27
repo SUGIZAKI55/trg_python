@@ -10,7 +10,9 @@ try:
     with open(filename, "r", encoding="utf-8") as file:
         for line in file:
             # 各行を辞書型に変換
+            #print(f"{type(line)=}  {line=} ")
             record = json.loads(line.strip())
+            #print(f"{type(record)=} {record=}")
             name = record["name"]
             genre = record["genre"].strip()  # ジャンル名を取得
             result = record["result"]
@@ -29,6 +31,7 @@ try:
             # 正確に "正解" と一致する場合のみ正解数を増加
             if result.strip() == "正解":
                 result_data[name][genre]["correct"] += 1
+    print(f"{result_data=}")
 
     # 名前とジャンル別に正答率を計算
     for name, genres in result_data.items():
