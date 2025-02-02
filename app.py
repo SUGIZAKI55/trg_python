@@ -128,11 +128,10 @@ def question():
         qmaped_Q_no = qmap[Q_no]
         qmaped_Q_no = int(qmaped_Q_no)
         quiz_item = quiz_questions[qmaped_Q_no]
-        session["current_question_id"] = qmaped_Q_no
         
-        # 問題IDを取り出してセッションに保存（追加1/26）
-        question_id = quiz_item[0]  # 問題IDが1行目にある
-        session["current_question_id"] = question_id  # セッションに保存
+        # 問題IDを正確に保存
+        question_id = quiz_item[0]
+        session["current_question_id"] = question_id
 
         answer_choices = quiz_item[3].split(":")
 
@@ -189,8 +188,7 @@ def check_answer():
         "name": session.get("username", "不明"),
         "genre": ', '.join(session["genre_name"]),
         "qmap": session["qmap"],
-        # "question_id": question_id,
-        "question_id": session.get("current_question_id", "不明"),
+        "question_id": session["current_question_id"],
         "start_time": start_datetime.strftime('%H:%M:%S'),
         "end_time": end_datetime.strftime('%H:%M:%S'),
         "elapsed_time": elapsed_time_str,
@@ -228,37 +226,37 @@ def view():
 
     # 名前とジャンルごとに正解数と問題数を記録する辞書
     result_data = {}
-    username=session['username']
+    username = session['username']
+
     try:
         with open(filename, "r", encoding="utf-8") as file:
             for line in file:
                 # 各行を辞書型に変換
                 record = json.loads(line.strip())
                 name = record["name"]
-                genre = record["genre"].strip()  # ジャンル名を取得
+                genres = record["genre"].strip().split(":")  # 修正1: 複数ジャンルを分割してリストにする
                 result = record["result"]
-                question_id = record.get("current_question_id", "不明")
-                
-                # 名前が辞書に存在しなければ初期化
-                if name not in result_data:
-                    result_data[name] = {}
+                question_id = record.get("question_id", "不明")
 
-                # ジャンルが辞書に存在しなければ初期化
-                if genre not in result_data[name]:
-                    result_data[name][genre] = {"correct": 0, "total": 0,"error":[]}
+                for genre in genres:  # 修正2: 各ジャンルごとにデータを処理
+                    # 名前が辞書に存在しなければ初期化
+                    if name not in result_data:
+                        result_data[name] = {}
 
-                # 総問題数を1増加
-                result_data[name][genre]["total"] += 1
+                    # ジャンルが辞書に存在しなければ初期化
+                    if genre not in result_data[name]:
+                        result_data[name][genre] = {"correct": 0, "total": 0, "error": []}
 
-                # 正確に "正解" と一致する場合のみ正解数を増加
-                if result.strip() == "正解":
-                    result_data[name][genre]["correct"] += 1
+                    # 総問題数を1増加
+                    result_data[name][genre]["total"] += 1
 
-                else:
-                    question_id = record.get("current_question_id", "不明")
-                    result_data[name][genre]["error"].append(question_id)
+                    # 正確に "正解" と一致する場合のみ正解数を増加
+                    if result.strip() == "正解":
+                        result_data[name][genre]["correct"] += 1
+                    else:
+                        result_data[name][genre]["error"].append(question_id)
 
-        # 名前とジャンル別に正答率を計算
+        # 名前とジャンル別に正答率を計算して出力
         for name, genres in result_data.items():
             print(f"名前: {name}")
             for genre, data in genres.items():
@@ -271,15 +269,47 @@ def view():
                     accuracy = (correct / total) * 100
                 else:
                     accuracy = 0
-                print(f"  ジャンル: {genre}, 正答率: {accuracy:.2f}% ({correct}/{total}),間違ったID:{error}")
-                template_data=f"  ジャンル: {genre}, 正答率: {accuracy:.2f}% ({correct}/{total})" 
-        ans=result_data[username]
+
+                print(f"  ジャンル: {genre}, 正答率: {accuracy:.2f}% ({correct}/{total}), 間違ったID: {', '.join(error) if error else 'なし'}")
+
+        ans = result_data[username]
+
     except FileNotFoundError:
         print(f"ファイル '{filename}' が見つかりません。")
     except json.JSONDecodeError:
         print("JSON データの解析中にエラーが発生しました。")
-    # print(f"{result_data=}")
-    return render_template('view.html',ans=ans)
+
+    return render_template('view.html', ans=ans)
+
+@app.route('/retry/<question_id>', methods=['GET'])
+def retry_question(question_id):
+    # 問題IDに基づいて該当する問題を探す
+    quiz_item = next((q for q in quiz_questions if q[0] == question_id), None)
+
+    if quiz_item is None:
+        return "問題が見つかりませんでした。", 404
+
+    # 問題データをセッションに保存して再出題
+    session["current_question_id"] = question_id
+    answer_choices = quiz_item[3].split(":")
+    
+    if len(answer_choices) < 4:
+        max_choices = len(answer_choices)
+    else:
+        max_choices = 4
+
+    selected_choices = random.sample(answer_choices, max_choices)
+    session["selected_choices"] = selected_choices
+    correct_answers_temp = set(quiz_item[4].split(":"))
+    correct_choices = set(selected_choices) & correct_answers_temp
+    session["correct_ans"] = correct_choices
+
+    start_datetime = datetime.now()
+    formatted_date_string = start_datetime.strftime('%Y-%m-%d %H:%M:%S')
+    session["start_datetime"] = formatted_date_string
+    session["genre_name"] = [quiz_item[1]]  # ジャンルを設定
+
+    return render_template('question.html', question=quiz_item[2], choices=selected_choices, genre_name=quiz_item[1])
 
 if __name__ == "__main__":
     app.run(debug=True, port=8888)
