@@ -186,7 +186,8 @@ def check_answer():
     data = {
         "date": datetime.now().strftime('%Y-%m-%d'),
         "name": session.get("username", "不明"),
-        "genre": ', '.join(session["genre_name"]),
+        # "genre": ', '.join(session["genre_name"]),
+        "genre": session["genre_name"][0],
         "qmap": session["qmap"],
         "question_id": session["current_question_id"],
         "start_time": start_datetime.strftime('%H:%M:%S'),
@@ -234,7 +235,9 @@ def view():
                 # 各行を辞書型に変換
                 record = json.loads(line.strip())
                 name = record["name"]
-                genres = record["genre"].strip().split(":")  # 修正1: 複数ジャンルを分割してリストにする
+                # genres = record["genre"].strip().split(":")  # 修正1: 複数ジャンルを分割してリストにする
+                # genre = record["genre"].strip() #2/9
+                genres = record["genre"].strip().split(":") if "genre" in record and record["genre"] else ["不明"]
                 result = record["result"]
                 question_id = record.get("question_id", "不明")
 
@@ -303,6 +306,9 @@ def retry_question(question_id):
     correct_answers_temp = set(quiz_item[4].split(":"))
     correct_choices = set(selected_choices) & correct_answers_temp
     session["correct_ans"] = correct_choices
+
+    genre_name = quiz_item[1].split(":")[0]  #2/9追加
+    session["genre_name"] = [genre_name]
 
     start_datetime = datetime.now()
     formatted_date_string = start_datetime.strftime('%Y-%m-%d %H:%M:%S')
