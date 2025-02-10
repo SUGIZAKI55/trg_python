@@ -210,7 +210,7 @@ def genre():
 def firstquestion():
     genre_name = request.form.get('category')
     session["genre_name"] = genre_name
-    genre_no = genre_to_ids[genre_name[0]]
+    genre_no = genre_to_ids[genre_name]
     session["genre_no"] = genre_no
     number = int(request.form['nanko'])
     session["number"] = number
