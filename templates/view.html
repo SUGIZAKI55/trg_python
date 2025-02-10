@@ -3,6 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <title>正答率の表示</title>
+    <style>
+        table {
+            width: 80%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
 </head>
 <body>
     <h1>正答率の結果</h1>
@@ -11,7 +26,7 @@
     <div>
         <h2>名前とジャンル別正答率</h2>
         {% if ans %}
-            <table border="1">
+            <table>
                 <thead>
                     <tr>
                         <th>ジャンル</th>
@@ -28,7 +43,15 @@
                         <td>{{ (data.correct / data.total) * 100 | round(2) }}%</td>
                         <td>{{ data.correct }}</td>
                         <td>{{ data.total }}</td>
-                        <td>{{ question_id[genre] if question_id and genre in question_id else "N/A" }}</td>
+                        <td>
+                            {% if data.error %}
+                            {% for question_id in data.error %}
+                                <a href="{{ url_for('retry_question', question_id=question_id) }}">{{ question_id }}</a>{% if not loop.last %}, {% endif %}
+                            {% endfor %}
+                        {% else %}
+                            なし
+                        {% endif %}
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -39,44 +62,3 @@
     </div>
 </body>
 </html>
-
-
-
-
-<!-- <!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <title>正答率の表示</title>
-</head>
-<body>
-    <h1>正答率の結果</h1>
-
-    <!-- template_dataを表示 -->
-    <div>
-        <h2>テンプレートデータ</h2>
-        <p>{{ template_data }}</p>
-    </div>
-
-    <!-- resultsの詳細を表示 -->
-    <div>
-        <h2>名前とジャンル別正答率</h2>
-        {% if ans %}
-                <div>
-                    <ul>
-                        {% for genre, data in ans.items() %}
-                            <li>
-                                ジャンル: {{ genre }}<br>
-                                正答率: {{ (data.correct / data.total) * 100 | round(2) }}% 
-                                ({{ data.correct }}/{{ data.total }})
-                                あなたの間違えた問題{{question_id}}
-                            </li>
-                        {% endfor %}
-                    </ul>
-                </div>
-        {% else %}
-            <p>データがありません。</p>
-        {% endif %}
-    </div>
-</body>
-</html> -->

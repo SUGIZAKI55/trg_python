@@ -1,140 +1,216 @@
 0
-地理:文化
-次の中で日本の都市を選んでください。
-東京:大阪:ニューヨーク:北海道
-東京:大阪
-東京、大阪は日本の都市です。
+append(): insert(): add(): push()
+次の中でPythonのリストに要素を追加する方法を選んでください。
+append(): insert(): add(): push()
+append(): insert()
+append()、insert()はPythonのリストに要素を追加する方法です。
 
 1
-動物:科学
-次の中で動物園でよく見かける動物を選んでください。
-ゾウ:キリン:サル:カニ
-ゾウ:キリン:サル
-ゾウ、キリン、サルは動物園でよく見かけます。
+def: lambda: func: method
+次の中でPythonの関数を定義するためのキーワードを選んでください。
+def: lambda: func: method
+def: lambda
+def と lambda はPythonの関数定義で使われます。
 
 2
-食べ物:文化
-次の中で朝ごはんに食べることが多いものを選んでください。
-ごはん:パン:ジュース:ケーキ
-ごはん:パン
-朝ごはんには、ごはんやパンが定番です。
+for: while: loop: iterate
+次の中でPythonのループ構文に使われるものを選んでください。
+for: while: loop: iterate
+for: while
+for と while はPythonのループに使われる基本構文です。
 
 3
-歴史:地理
-次の中で日本の昔の有名な町を選んでください。
-京都:奈良:江戸:札幌
-京都:奈良:江戸
-京都、奈良、江戸は日本の昔の有名な町です。
+str(): int(): float(): convert()
+次の中でPythonで型変換に使われる関数を選んでください。
+str(): int(): float(): convert()
+str(): int(): float()
+str()、int()、float() はデータ型の変換に使用される関数です。
 
 4
-科学:動物
-次の中で海で泳いでいることが多い生き物を選んでください。
-サメ:イワシ:カメ:ウサギ
-サメ:イワシ
-サメとイワシは海で泳いでいます。
+if: elif: else: case
+次の中で条件分岐に使われるPythonのキーワードを選んでください。
+if: elif: else: case
+if: elif: else
+if、elif、else は条件分岐でよく使われるキーワードです。
 
 5
-文化:食べ物
-次の中でお祝いのときに食べることが多いものを選んでください。
-おせち料理:赤飯:ケーキ:ハンバーガー
-おせち料理:赤飯:ケーキ
-おせち料理、赤飯、ケーキはお祝いのときに食べられます。
+try: except: finally: throw
+次の中でPythonの例外処理に使われるキーワードを選んでください。
+try: except: finally: throw
+try: except: finally
+try、except、finally は例外を処理するための構文です。
 
 6
-地理:科学
-次の中で山の名前を選んでください。
-富士山:桜島:エベレスト:キラウエア
-富士山:桜島:エベレスト
-富士山、桜島,エベレストは山の名前です。
+class: object: def: method
+次の中でPythonのクラス定義に使われるものを選んでください。
+class: object: def: method
+class: def
+class と def はオブジェクト指向プログラミングでの基本です。
 
 7
-歴史:文化
-次の中で日本で昔から行われている行事を選んでください。
-七夕:お正月:お盆:クリスマス
-七夕:お正月:お盆
-七夕、お正月、お盆は日本の昔からの行事です。
+list: tuple: set: array
+次の中でPythonのコレクション型を表すものを選んでください。
+list: tuple: set: array
+list: tuple: set
+list、tuple、set はPythonのデータ構造としてよく使用されます。
 
 8
-動物:科学
-次の中で草や葉っぱを食べる動物を選んでください。
-ゾウ:キリン:カメ:ライオン
-ゾウ:キリン:カメ
-ゾウ、キリン、カメは草や葉っぱを食べます。
+is: ==: equals(): compare
+次の中でPythonで値の比較に使われる演算子を選んでください。
+is: ==: equals(): compare
+is: ==
+is と == はPythonで値やオブジェクトの比較に使われます。
 
 9
-食べ物:文化
-次の中で日本で昔から飲まれている飲み物を選んでください。
-緑茶:日本酒:ジュース:コーヒー
-緑茶:日本酒
-緑茶、日本酒は日本で昔から飲まれている飲み物です。
+import: from: as: include
+次の中でPythonのモジュールをインポートするためのキーワードを選んでください。
+import: from: as: include
+import: from: as
+import、from、as はモジュールの読み込み時に使います。
 
 10
-地理:文化
-次の中で川の名前を選んでください。
-利根川:信濃川:隅田川:ナイル川
-利根川:信濃川:隅田川
-利根川、信濃川、隅田川は川の名前です。
+with: open: read: load
+次の中でファイル操作に関連するPythonのキーワードを選んでください。
+with: open: read: load
+with: open: read
+with、open、read はファイル操作で頻繁に使われます。
 
 11
-科学:動物
-次の中で卵を産む動物を選んでください。
-ニワトリ:カメ:カエル:犬
-ニワトリ:カメ:カエル
-ニワトリ、カメ、カエルは卵を産みます。
+and: or: not: xor
+次の中でPythonの論理演算に使われる演算子を選んでください。
+and: or: not: xor
+and: or: not
+and、or、not は基本的な論理演算子です。
 
 12
-文化:歴史
-次の中でお寺や神社で見られるものを選んでください。
-鳥居:仏像:鐘:自動販売機
-鳥居:仏像:鐘
-鳥居、仏像、鐘はお寺や神社で見られます。
+len(): size(): length(): count()
+次の中でPythonでリストや文字列の長さを取得する関数を選んでください。
+len(): size(): length(): count()
+len()
+len() はリストや文字列の長さを返すために使われます。
 
 13
-動物:地理
-次の中で暑い地域に住む動物を選んでください。
-ゾウ:キリン:ライオン:シロクマ
-ゾウ:キリン:ライオン
-ゾウ、キリン、ライオンは暑い地域に住んでいます。
+return: yield: break: continue
+次の中で関数の結果を返すために使うキーワードを選んでください。
+return: yield: break: continue
+return: yield
+return と yield は関数の出力を制御するために使います。
 
 14
-食べ物:文化
-次の中でお正月に食べることが多いものを選んでください。
-お雑煮:黒豆:かまぼこ:おにぎり
-お雑煮:黒豆:かまぼこ
-お正月にはお雑煮、黒豆、かまぼこがよく食べられます。
+global: local: nonlocal: outer
+次の中でスコープ（変数の範囲）に関係するキーワードを選んでください。
+global: local: nonlocal: outer
+global: nonlocal
+global と nonlocal はスコープを制御するために使います。
 
 15
-地理:科学
-次の中で自然現象を選んでください。
-台風:地震:津波:虹
-台風:地震:津波
-台風、地震、津波は自然現象です。
+dict: set: list: stack
+次の中でPythonのデータ型であるものを選んでください。
+dict: set: list: stack
+dict: set: list
+dict、set、list はPythonの組み込みデータ型です。
 
 16
-文化:歴史
-次の中で季節を感じる行事を選んでください。
-節分:花見:紅葉狩り:運動会
-節分:花見:紅葉狩り
-節分、花見、紅葉狩りは季節を感じる行事です。
+map(): filter(): reduce(): transform()
+次の中で関数型プログラミングに関連するPythonの関数を選んでください。
+map(): filter(): reduce(): transform()
+map(): filter(): reduce()
+map()、filter()、reduce() は関数型プログラミングで使われます。
 
 17
-科学:動物
-次の中で空を飛べない鳥を選んでください。
-ダチョウ:エミュー:ペンギン:ハト
-ダチョウ:エミュー:ペンギン
-ダチョウ、エミュー、ペンギンは空を飛べません。
+raise: throw: try: catch
+次の中でPythonで例外を送出するためのキーワードを選んでください。
+raise: throw: try: catch
+raise
+raise は例外を明示的に送出するために使われます。
 
 18
-地理:食べ物
-次の中で名前に地名が入っている料理を選んでください。
-博多ラーメン:讃岐うどん:名古屋コーチン:カレーライス
-博多ラーメン:讃岐うどん:名古屋コーチン
-博多ラーメン、讃岐うどん、名古屋コーチンは名前に地名が入っています。
+break: continue: pass: skip
+次の中でループの制御に関連するPythonのキーワードを選んでください。
+break: continue: pass: skip
+break: continue: pass
+break、continue、pass はループの流れを制御するために使われます。
 
 19
-歴史:文化
-次の中で昔の日本の有名な人を選んでください。
-織田信長:豊臣秀吉:徳川家康:坂本龍馬
-織田信長:豊臣秀吉:徳川家康
-織田信長、豊臣秀吉、徳川家康は昔の日本の有名な人です。
+assert: validate: check: inspect
+次の中でPythonで条件が正しいか確認するために使うキーワードを選んでください。
+assert: validate: check: inspect
+assert
+assert は条件を確認し、失敗した場合に例外を発生させます。
 
+20
+zip: enumerate: range: join
+次の中でイテラブルなオブジェクトを操作するための関数を選んでください。
+zip(): enumerate(): range(): join()
+zip(): enumerate(): range()
+zip()、enumerate()、range() はイテラブルなオブジェクトを操作するための関数です。
+
+21
+open: close: write: append
+次の中でファイルの書き込みに関連する操作を選んでください。
+open(): close(): write(): append()
+open(): write(): append()
+open()、write()、append() はファイルにデータを書き込むときに使います。
+
+22
+bool: int: str: char
+次の中でデータ型に関連するPythonの関数を選んでください。
+bool(): int(): str(): char()
+bool(): int(): str()
+bool()、int()、str() はデータ型の変換に使います。
+
+23
+time: datetime: calendar: dateutil
+次の中で日付や時間を扱うために使われるPythonのモジュールを選んでください。
+time: datetime: calendar: dateutil
+time: datetime: calendar
+time、datetime、calendar は日付や時間の操作に使います。
+
+24
+super: self: base: parent
+次の中でオブジェクト指向プログラミングにおける特殊なキーワードを選んでください。
+super(): self: base: parent
+super(): self
+super() と self はクラスのメソッドや親クラスの呼び出しで使われます。
+
+25
+None: False: True: Null
+次の中でPythonで値がないことを表すキーワードを選んでください。
+None: False: True: Null
+None
+None はPythonで「何もない」を表す特別なオブジェクトです。
+
+26
+isinstance: type: id: eval
+次の中でオブジェクトの型を判定するために使う関数を選んでください。
+isinstance(): type(): id(): eval()
+isinstance(): type()
+isinstance() と type() はオブジェクトの型チェックに使います。
+
+27
+sorted: reversed: order: filter
+次の中でリストを並び替えるために使うPythonの関数を選んでください。
+sorted(): reversed(): order(): filter()
+sorted(): reversed()
+sorted() と reversed() はリストの順序を変更するために使います。
+
+28
+all: any: max: min
+次の中でイテラブルの中身を評価する関数を選んでください。
+all(): any(): max(): min()
+all(): any()
+all() と any() はイテラブル内のすべてまたは一部の要素を評価します。
+
+29
+bytes: string: int: float
+次の中でPythonの組み込みデータ型を表すものを選んでください。
+bytes: string: int: float
+bytes: int: float
+bytes、int、float はPythonの組み込みデータ型です。
+
+30
+try: except: assert: validate
+次の中で例外処理またはエラーチェックに使うキーワードを選んでください。
+try: except: assert: validate
+try: except: assert
+try、except、assert はエラーの処理と検証に使われます。
