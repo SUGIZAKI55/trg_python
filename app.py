@@ -182,12 +182,12 @@ def check_answer():
 
     user_choice_str = ', '.join(user_choice)
     correct_ans_str = ', '.join(correct_ans)
-
+    #print(f'@185 {session["genre_name"]=}')
     data = {
         "date": datetime.now().strftime('%Y-%m-%d'),
         "name": session.get("username", "不明"),
-        # "genre": ', '.join(session["genre_name"]),
-        "genre": session["genre_name"][0],
+        "genre": session["genre_name"],
+        #"genre": session["genre_name"][0],
         "qmap": session["qmap"],
         "question_id": session["current_question_id"],
         "start_time": start_datetime.strftime('%H:%M:%S'),
@@ -208,7 +208,7 @@ def genre():
 
 @app.route('/firstquestion', methods=['POST'])
 def firstquestion():
-    genre_name = request.form.getlist('category')
+    genre_name = request.form.get('category')
     session["genre_name"] = genre_name
     genre_no = genre_to_ids[genre_name[0]]
     session["genre_no"] = genre_no
@@ -234,16 +234,12 @@ def view():
             for line in file:
                 # 各行を辞書型に変換
                 record = json.loads(line.strip())
-                print(f"@237 {record=}")
                 name = record["name"]
-                # genres = record["genre"].strip().split(":")  # 修正1: 複数ジャンルを分割してリストにする
-                # genre = record["genre"].strip() #2/9
 
                 if "genre" in record and record["genre"]:
                     genres = record["genre"].strip().split(":")
                 else:
                     genres = ["不明"]
-
 
                 result = record["result"]
                 question_id = record.get("question_id", "不明")
@@ -265,7 +261,7 @@ def view():
 
         # 名前とジャンル別に正答率を計算して出力
         for name, genres in result_data.items():
-            print(f"名前: {name}")
+            #print(f"名前: {name}")
             for genre, data in genres.items():
                 total = data["total"]
                 correct = data["correct"]
@@ -275,7 +271,7 @@ def view():
                     accuracy = (correct / total) * 100
                 else:
                     accuracy = 0
-                print(f"  ジャンル: {genre}, 正答率: {accuracy:.2f}% ({correct}/{total}), 間違ったID: {', '.join(error) if error else 'なし'}")
+                #print(f"  ジャンル: {genre}, 正答率: {accuracy:.2f}% ({correct}/{total}), 間違ったID: {', '.join(error) if error else 'なし'}")
         ans = result_data[username]
     except FileNotFoundError:
         print(f"ファイル '{filename}' が見つかりません。")
@@ -288,11 +284,19 @@ def view():
 @app.route('/retry/<question_id>', methods=['GET'])
 def retry_question(question_id):
     # 問題IDに基づいて該当する問題を探す
-    quiz_item = next((q for q in quiz_questions if q[0] == question_id), None)
-
+    #quiz_item = next((q for q in quiz_questions if q[0] == question_id), None)
+    quiz_item = None
+    for q in quiz_questions:
+        if q[0] == question_id:
+            quiz_item = q
+            break  # 最初に見つかったらループを抜ける
     if quiz_item is None:
         return "問題が見つかりませんでした。", 404
+    session["qmap"] = [question_id]#１問だけのQmap
+    session["number"] = 1
 
+    genre=request.args.get('genre', 'Unknown')#クエリパラメータがあれば取得、なければUnknown
+    #print(f"@295 {genre=}")
     # 問題データをセッションに保存して再出題
     session["current_question_id"] = question_id
     answer_choices = quiz_item[3].split(":")
@@ -307,16 +311,13 @@ def retry_question(question_id):
     correct_answers_temp = set(quiz_item[4].split(":"))
     correct_choices = set(selected_choices) & correct_answers_temp
     session["correct_ans"] = correct_choices
-
-    genre_name = quiz_item[1].split(":")[0]  #2/9追加
-    session["genre_name"] = [genre_name]
-
+    session["genre_name"] = genre
     start_datetime = datetime.now()
     formatted_date_string = start_datetime.strftime('%Y-%m-%d %H:%M:%S')
     session["start_datetime"] = formatted_date_string
-    session["genre_name"] = [quiz_item[1]]  # ジャンルを設定
 
-    return render_template('question.html', question=quiz_item[2], choices=selected_choices, genre_name=quiz_item[1])
+
+    return render_template('question.html', question=quiz_item[2], choices=selected_choices, genre_name=genre)
 
 if __name__ == "__main__":
     app.run(debug=True, port=8888)
