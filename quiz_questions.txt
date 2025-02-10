@@ -1,215 +1,215 @@
 0
-append(): insert(): add(): push()
+append(): insert(): リスト: 追加
 次の中でPythonのリストに要素を追加する方法を選んでください。
 append(): insert(): add(): push()
 append(): insert()
 append()、insert()はPythonのリストに要素を追加する方法です。
 
 1
-def: lambda: func: method
+def: lambda: 関数
 次の中でPythonの関数を定義するためのキーワードを選んでください。
 def: lambda: func: method
 def: lambda
 def と lambda はPythonの関数定義で使われます。
 
 2
-for: while: loop: iterate
+for: while: ループ
 次の中でPythonのループ構文に使われるものを選んでください。
 for: while: loop: iterate
 for: while
 for と while はPythonのループに使われる基本構文です。
 
 3
-str(): int(): float(): convert()
+str: int: float: 型:変換
 次の中でPythonで型変換に使われる関数を選んでください。
 str(): int(): float(): convert()
 str(): int(): float()
 str()、int()、float() はデータ型の変換に使用される関数です。
 
 4
-if: elif: else: case
+if: elif: else: 条件:分岐
 次の中で条件分岐に使われるPythonのキーワードを選んでください。
 if: elif: else: case
 if: elif: else
 if、elif、else は条件分岐でよく使われるキーワードです。
 
 5
-try: except: finally: throw
+try: except: finally: 例外
 次の中でPythonの例外処理に使われるキーワードを選んでください。
 try: except: finally: throw
 try: except: finally
 try、except、finally は例外を処理するための構文です。
 
 6
-class: object: def: method
+class: def: クラス
 次の中でPythonのクラス定義に使われるものを選んでください。
 class: object: def: method
 class: def
 class と def はオブジェクト指向プログラミングでの基本です。
 
 7
-list: tuple: set: array
+list: tuple: set: コレクション:型
 次の中でPythonのコレクション型を表すものを選んでください。
 list: tuple: set: array
 list: tuple: set
 list、tuple、set はPythonのデータ構造としてよく使用されます。
 
 8
-is: ==: equals(): compare
+is: ==: 比較
 次の中でPythonで値の比較に使われる演算子を選んでください。
 is: ==: equals(): compare
 is: ==
 is と == はPythonで値やオブジェクトの比較に使われます。
 
 9
-import: from: as: include
+import: from: as: モジュール:インポート
 次の中でPythonのモジュールをインポートするためのキーワードを選んでください。
 import: from: as: include
 import: from: as
 import、from、as はモジュールの読み込み時に使います。
 
 10
-with: open: read: load
+with: open: read: ファイル
 次の中でファイル操作に関連するPythonのキーワードを選んでください。
 with: open: read: load
 with: open: read
 with、open、read はファイル操作で頻繁に使われます。
 
 11
-and: or: not: xor
+and: or: not: 論理
 次の中でPythonの論理演算に使われる演算子を選んでください。
 and: or: not: xor
 and: or: not
 and、or、not は基本的な論理演算子です。
 
 12
-len(): size(): length(): count()
+len(): 文字列:リスト
 次の中でPythonでリストや文字列の長さを取得する関数を選んでください。
 len(): size(): length(): count()
 len()
 len() はリストや文字列の長さを返すために使われます。
 
 13
-return: yield: break: continue
+return: yield: 関数
 次の中で関数の結果を返すために使うキーワードを選んでください。
 return: yield: break: continue
 return: yield
 return と yield は関数の出力を制御するために使います。
 
 14
-global: local: nonlocal: outer
+global: nonlocal: スコープ
 次の中でスコープ（変数の範囲）に関係するキーワードを選んでください。
 global: local: nonlocal: outer
 global: nonlocal
 global と nonlocal はスコープを制御するために使います。
 
 15
-dict: set: list: stack
+dict: set: list: 型
 次の中でPythonのデータ型であるものを選んでください。
 dict: set: list: stack
 dict: set: list
 dict、set、list はPythonの組み込みデータ型です。
 
 16
-map(): filter(): reduce(): transform()
+map: filter: reduce: 関数型
 次の中で関数型プログラミングに関連するPythonの関数を選んでください。
 map(): filter(): reduce(): transform()
 map(): filter(): reduce()
 map()、filter()、reduce() は関数型プログラミングで使われます。
 
 17
-raise: throw: try: catch
+raise: 例外: try: catch
 次の中でPythonで例外を送出するためのキーワードを選んでください。
 raise: throw: try: catch
 raise
 raise は例外を明示的に送出するために使われます。
 
 18
-break: continue: pass: skip
+break: continue: pass: 制御:ループ
 次の中でループの制御に関連するPythonのキーワードを選んでください。
 break: continue: pass: skip
 break: continue: pass
 break、continue、pass はループの流れを制御するために使われます。
 
 19
-assert: validate: check: inspect
+assert:例外
 次の中でPythonで条件が正しいか確認するために使うキーワードを選んでください。
 assert: validate: check: inspect
 assert
 assert は条件を確認し、失敗した場合に例外を発生させます。
 
 20
-zip: enumerate: range: join
+zip: enumerate: range: イテラブル
 次の中でイテラブルなオブジェクトを操作するための関数を選んでください。
 zip(): enumerate(): range(): join()
 zip(): enumerate(): range()
 zip()、enumerate()、range() はイテラブルなオブジェクトを操作するための関数です。
 
 21
-open: close: write: append
+open: ファイル:書き込み: write: append
 次の中でファイルの書き込みに関連する操作を選んでください。
 open(): close(): write(): append()
 open(): write(): append()
 open()、write()、append() はファイルにデータを書き込むときに使います。
 
 22
-bool: int: str: char
+bool: int: str: 型
 次の中でデータ型に関連するPythonの関数を選んでください。
 bool(): int(): str(): char()
 bool(): int(): str()
 bool()、int()、str() はデータ型の変換に使います。
 
 23
-time: datetime: calendar: dateutil
+time: datetime: calendar: 日付:時間
 次の中で日付や時間を扱うために使われるPythonのモジュールを選んでください。
 time: datetime: calendar: dateutil
 time: datetime: calendar
 time、datetime、calendar は日付や時間の操作に使います。
 
 24
-super: self: base: parent
+super: self: クラス
 次の中でオブジェクト指向プログラミングにおける特殊なキーワードを選んでください。
 super(): self: base: parent
 super(): self
 super() と self はクラスのメソッドや親クラスの呼び出しで使われます。
 
 25
-None: False: True: Null
+None: 
 次の中でPythonで値がないことを表すキーワードを選んでください。
 None: False: True: Null
 None
 None はPythonで「何もない」を表す特別なオブジェクトです。
 
 26
-isinstance: type: id: eval
+isinstance: type: 型
 次の中でオブジェクトの型を判定するために使う関数を選んでください。
 isinstance(): type(): id(): eval()
 isinstance(): type()
 isinstance() と type() はオブジェクトの型チェックに使います。
 
 27
-sorted: reversed: order: filter
+sorted: reversed: リスト: 並び替え
 次の中でリストを並び替えるために使うPythonの関数を選んでください。
 sorted(): reversed(): order(): filter()
 sorted(): reversed()
 sorted() と reversed() はリストの順序を変更するために使います。
 
 28
-all: any: max: min
+all: any: イテラブル
 次の中でイテラブルの中身を評価する関数を選んでください。
 all(): any(): max(): min()
 all(): any()
 all() と any() はイテラブル内のすべてまたは一部の要素を評価します。
 
 29
-bytes: string: int: float
+bytes: 型: int: float
 次の中でPythonの組み込みデータ型を表すものを選んでください。
 bytes: string: int: float
 bytes: int: float
 bytes、int、float はPythonの組み込みデータ型です。
 
 30
-try: except: assert: validate
+try: except: assert: 例外
 次の中で例外処理またはエラーチェックに使うキーワードを選んでください。
 try: except: assert: validate
 try: except: assert

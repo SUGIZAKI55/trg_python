@@ -154,7 +154,7 @@ def question():
         return render_template('question.html', question=quiz_item[2], choices=selected_choices, genre_name=genre_name)
 
 def log_w(data):
-    with open('seiseki.ndjson', 'a', encoding='utf-8') as file:
+    with open('log.ndjson', 'a', encoding='utf-8') as file:
         json_string = json.dumps(data, ensure_ascii=False)
         file.write(json_string + '\n')
         print("データを改行区切りJSON形式で保存しました。")
@@ -225,7 +225,7 @@ def firstquestion():
 @app.route('/view', methods=['GET'])
 def view():
     # ファイルを読み込み
-    filename = "seiseki.ndjson"
+    filename = "log.ndjson"
     # 名前とジャンルごとに正解数と問題数を記録する辞書
     result_data = {}
     username = session['username']
