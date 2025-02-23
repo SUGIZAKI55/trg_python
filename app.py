@@ -48,6 +48,8 @@ for question in questions:
     parts = question.split('\n')
     if len(parts) == 6:
         quiz_questions.append(parts)
+#print(f"@51 {len(quiz_questions)=}")        
+#print(f"@52 {quiz_questions=}")        
 for topic in quiz_questions:
     topic_id = topic[0]
     genre_list = topic[1].split(":")
@@ -127,6 +129,7 @@ def question():
         qmap = session["qmap"]
         qmaped_Q_no = qmap[Q_no]
         qmaped_Q_no = int(qmaped_Q_no)
+        #print(f"{qmaped_Q_no=}")
         quiz_item = quiz_questions[qmaped_Q_no]
         
         # 問題IDを正確に保存
@@ -134,6 +137,8 @@ def question():
         session["current_question_id"] = question_id
 
         answer_choices = quiz_item[3].split(":")
+        kaisetu = quiz_item[5]
+        session["kaisetu"]=kaisetu
 
         if len(answer_choices) < 4:
             max_choices = len(answer_choices)
@@ -154,7 +159,7 @@ def question():
         return render_template('question.html', question=quiz_item[2], choices=selected_choices, genre_name=genre_name)
 
 def log_w(data):
-    with open('seiseki.ndjson', 'a', encoding='utf-8') as file:
+    with open('log.ndjson', 'a', encoding='utf-8') as file:
         json_string = json.dumps(data, ensure_ascii=False)
         file.write(json_string + '\n')
         print("データを改行区切りJSON形式で保存しました。")
@@ -182,12 +187,12 @@ def check_answer():
 
     user_choice_str = ', '.join(user_choice)
     correct_ans_str = ', '.join(correct_ans)
-
+    #print(f'@185 {session["genre_name"]=}')
     data = {
         "date": datetime.now().strftime('%Y-%m-%d'),
         "name": session.get("username", "不明"),
-        # "genre": ', '.join(session["genre_name"]),
-        "genre": session["genre_name"][0],
+        "genre": session["genre_name"],
+        #"genre": session["genre_name"][0],
         "qmap": session["qmap"],
         "question_id": session["current_question_id"],
         "start_time": start_datetime.strftime('%H:%M:%S'),
@@ -198,8 +203,9 @@ def check_answer():
         "result": answer
     }
     log_w(data)
-    print(f"記録されるデータ: {data}")
-    return render_template('kekka.html', answer=answer, et=elapsed_time_str, Q_no=Q, user_choice=user_choice_str, correct_ans=correct_ans_str, answer_feedback={c: ("○" if c in correct_ans else "×") for c in selected_choices})
+    kst=session["kaisetu"]
+    print(f"解説: {kst=}")
+    return render_template('kekka.html', answer=answer, et=elapsed_time_str, Q_no=Q, user_choice=user_choice_str, correct_ans=correct_ans_str, kaisetu=session["kaisetu"],answer_feedback={c: ("○" if c in correct_ans else "×") for c in selected_choices})
 
 @app.route('/genre')
 def genre():
@@ -208,9 +214,9 @@ def genre():
 
 @app.route('/firstquestion', methods=['POST'])
 def firstquestion():
-    genre_name = request.form.getlist('category')
+    genre_name = request.form.get('category')
     session["genre_name"] = genre_name
-    genre_no = genre_to_ids[genre_name[0]]
+    genre_no = genre_to_ids[genre_name]
     session["genre_no"] = genre_no
     number = int(request.form['nanko'])
     session["number"] = number
@@ -218,104 +224,114 @@ def firstquestion():
     session["qmap"] = qmap
     Q_no = 0
     session["Q_no"] = Q_no
+    session["isRetry"]=False
     return render_template('first.html')
 
+
+#ログファイルを集計する　→　結果を表示
 @app.route('/view', methods=['GET'])
 def view():
     # ファイルを読み込み
-    filename = "seiseki.ndjson"
-
+    filename = "log.ndjson"
     # 名前とジャンルごとに正解数と問題数を記録する辞書
     result_data = {}
     username = session['username']
-
     try:
         with open(filename, "r", encoding="utf-8") as file:
             for line in file:
                 # 各行を辞書型に変換
                 record = json.loads(line.strip())
                 name = record["name"]
-                # genres = record["genre"].strip().split(":")  # 修正1: 複数ジャンルを分割してリストにする
-                # genre = record["genre"].strip() #2/9
-                genres = record["genre"].strip().split(":") if "genre" in record and record["genre"] else ["不明"]
+
+                if "genre" in record and record["genre"]:
+                    genres = record["genre"].strip().split(":")
+                else:
+                    genres = ["不明"]
+
                 result = record["result"]
                 question_id = record.get("question_id", "不明")
-
                 for genre in genres:  # 修正2: 各ジャンルごとにデータを処理
                     # 名前が辞書に存在しなければ初期化
                     if name not in result_data:
                         result_data[name] = {}
-
                     # ジャンルが辞書に存在しなければ初期化
                     if genre not in result_data[name]:
                         result_data[name][genre] = {"correct": 0, "total": 0, "error": []}
-
                     # 総問題数を1増加
                     result_data[name][genre]["total"] += 1
-
                     # 正確に "正解" と一致する場合のみ正解数を増加
                     if result.strip() == "正解":
                         result_data[name][genre]["correct"] += 1
                     else:
                         result_data[name][genre]["error"].append(question_id)
 
+
         # 名前とジャンル別に正答率を計算して出力
         for name, genres in result_data.items():
-            print(f"名前: {name}")
+            #print(f"名前: {name}")
             for genre, data in genres.items():
                 total = data["total"]
                 correct = data["correct"]
                 error = data["error"]
-
                 # 正答率の計算
                 if total > 0:
                     accuracy = (correct / total) * 100
                 else:
                     accuracy = 0
-
-                print(f"  ジャンル: {genre}, 正答率: {accuracy:.2f}% ({correct}/{total}), 間違ったID: {', '.join(error) if error else 'なし'}")
-
+                #print(f"  ジャンル: {genre}, 正答率: {accuracy:.2f}% ({correct}/{total}), 間違ったID: {', '.join(error) if error else 'なし'}")
         ans = result_data[username]
-
     except FileNotFoundError:
         print(f"ファイル '{filename}' が見つかりません。")
     except json.JSONDecodeError:
         print("JSON データの解析中にエラーが発生しました。")
-
     return render_template('view.html', ans=ans)
+
+
 
 @app.route('/retry/<question_id>', methods=['GET'])
 def retry_question(question_id):
     # 問題IDに基づいて該当する問題を探す
-    quiz_item = next((q for q in quiz_questions if q[0] == question_id), None)
-
+    #quiz_item = next((q for q in quiz_questions if q[0] == question_id), None)
+    quiz_item = None
+    for q in quiz_questions:
+        if q[0] == question_id:
+            quiz_item = q
+            break  # 最初に見つかったらループを抜ける
     if quiz_item is None:
         return "問題が見つかりませんでした。", 404
+    session["qmap"] = [question_id]#１問だけのQmap
+    session["number"] = 1
 
-    # 問題データをセッションに保存して再出題
+    genre=request.args.get('genre', 'Unknown')#クエリパラメータがあれば取得、なければUnknown
+    #print(f"@295 {genre=}")
+    #問題データをセッションに保存して再出題
     session["current_question_id"] = question_id
+    #解答群の作成
     answer_choices = quiz_item[3].split(":")
     
     if len(answer_choices) < 4:
         max_choices = len(answer_choices)
     else:
         max_choices = 4
-
+    session["isRetry"]=True
+    #解説
+    kaisetu = quiz_item[5]
+    session["kaisetu"]=kaisetu
+    #正解の作成    
     selected_choices = random.sample(answer_choices, max_choices)
     session["selected_choices"] = selected_choices
     correct_answers_temp = set(quiz_item[4].split(":"))
     correct_choices = set(selected_choices) & correct_answers_temp
     session["correct_ans"] = correct_choices
-
-    genre_name = quiz_item[1].split(":")[0]  #2/9追加
-    session["genre_name"] = [genre_name]
-
+    #ジャンルの作成
+    session["genre_name"] = genre
+    #時刻
     start_datetime = datetime.now()
     formatted_date_string = start_datetime.strftime('%Y-%m-%d %H:%M:%S')
     session["start_datetime"] = formatted_date_string
-    session["genre_name"] = [quiz_item[1]]  # ジャンルを設定
 
-    return render_template('question.html', question=quiz_item[2], choices=selected_choices, genre_name=quiz_item[1])
+
+    return render_template('question.html', question=quiz_item[2], choices=selected_choices, genre_name=genre)
 
 if __name__ == "__main__":
     app.run(debug=True, port=8888)
